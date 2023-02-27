@@ -76,12 +76,16 @@ namespace MiniORM
 
         private bool IsModified(T proxyEntitiy, T entity)
         {
-            throw new NotImplementedException();
+            var monitoredProperties = typeof(T).GetProperties()
+                .Where(pi => DbContext.AllowedSqlTypes.Contains(pi.PropertyType))
+                .ToArray();
+
+            var modifiedProperties = monitoredProperties.Where(pi => !Equals(pi.GetValue(proxyEntitiy), pi.GetValue(entity))).ToArray();
+
+            return modifiedProperties.Any();
         }
 
-        private T[] GetPrimaryKeyValues(PropertyInfo[] primaryKeys, T proxyEntitiy)
-        {
-            throw new NotImplementedException();
-        }
+        private static IEnumerable<object> GetPrimaryKeyValues(PropertyInfo[] primaryKeys, T proxyEntitiy)
+            => primaryKeys.Select(pk => pk.GetValue(proxyEntitiy));
     }
 }
