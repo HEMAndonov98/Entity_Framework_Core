@@ -1,0 +1,39 @@
+﻿<Properties StartupConfiguration="{E29D66A0-0DB8-4B0E-ADF2-8043E0CA9E1E}|Default">
+  <MonoDevelop.Ide.ItemProperties.P02.VillainNames PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.ItemProperties.P05.ChangeTownNamesCasing PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.ItemProperties.P04.AddMinion PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.ItemProperties.P06.RemoveVillain PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.ItemProperties.P07.PrintAllMinionNames PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.ItemProperties.P03.MinionNames PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.ItemProperties.P01.InitialSetup PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Volumes/Extreme SSD/Entity Framework Core/ADODOTNETExercises/P04.AddMinion/Program.cs" relfile="P04.AddMinion/Program.cs" line="23" column="13" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="P09.IncreaseMinionAgeSP/Config.cs">
+    <Files>
+      <File FileName="P07.PrintAllMinionNames/Config.cs" Line="5" Column="77" />
+      <File FileName="P08.IncreaseMinionAge/Config.cs" Line="5" Column="76" />
+      <File FileName="P09.IncreaseMinionAgeSP/Config.cs" Line="5" Column="76" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="ADODOTNETExercises" expanded="True">
+            <Node name="P07.PrintAllMinionNames" expanded="True" />
+            <Node name="P08.IncreaseMinionAge" expanded="True" />
+            <Node name="P09.IncreaseMinionAgeSP" expanded="True">
+              <Node name="Config.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.P09.IncreaseMinionAgeSP PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.P08.IncreaseMinionAge PreferredExecutionTarget="MonoDevelop.Default" />
+  <MultiItemStartupConfigurations />
+</Properties>
