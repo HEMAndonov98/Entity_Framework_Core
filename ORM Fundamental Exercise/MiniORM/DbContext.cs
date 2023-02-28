@@ -95,7 +95,7 @@ namespace MiniORM
             where TEntity : class, new()
         {
             var currentTableName = this.GetTableName(typeof(TEntity));
-            var columns = this.FetchColumnnames(currentTableName).ToArray();
+            var columns = this._connection.FetchColumnNames(currentTableName).ToArray();
 
             if (dbSet.ChangeTracker.Added.Any())
             {
@@ -162,11 +162,6 @@ namespace MiniORM
                 .ToArray();
 
             return columns;
-        }
-
-        private IEnumerable<string> FetchColumnnames(object currentTableName)
-        {
-            throw new NotImplementedException();
         }
 
         private string GetTableName(Type type)
