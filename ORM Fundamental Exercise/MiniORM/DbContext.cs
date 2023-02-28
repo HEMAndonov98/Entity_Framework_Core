@@ -151,7 +151,17 @@ namespace MiniORM
 
         private string[] GetEntityColumns(Type table)
         {
-            throw new NotImplementedException();
+            var tableName = this.GetTableName(table);
+            var dbColumns = this._connection.FetchColumnNames(tableName);
+
+            var columns = table.GetProperties()
+                .Where(pi => dbColumns.Contains(pi.Name) &&
+                !pi.HasAttribute<NotMappedAttribute>() &&
+                AllowedSqlTypes.Contains(pi.PropertyType))
+                .Select(pi => pi.Name)
+                .ToArray();
+
+            return columns;
         }
 
         private IEnumerable<string> FetchColumnnames(object currentTableName)
