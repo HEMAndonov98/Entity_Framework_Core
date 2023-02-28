@@ -139,7 +139,17 @@ namespace MiniORM
 
         }
 
-        private IEnumerable<TEntity> LoadTableEntities<TEntity>() where TEntity : class, new()
+        private IEnumerable<TEntity> LoadTableEntities<TEntity>()
+            where TEntity : class, new()
+        {
+            var table = typeof(TEntity);
+            string[] columns = this.GetEntityColumns(table);
+            string tableName = this.GetTableName(table);
+            var fetchedRows = this._connection.FetchResultSet<TEntity>(tableName, columns).ToArray();
+            return fetchedRows;
+        }
+
+        private string[] GetEntityColumns(Type table)
         {
             throw new NotImplementedException();
         }
@@ -151,7 +161,13 @@ namespace MiniORM
 
         private string GetTableName(Type type)
         {
-            throw new NotImplementedException();
+            var tableName = type.Name;
+            if (tableName == null)
+            {
+                tableName = this._dbSetProperties[type].Name;
+            }
+
+            return tableName;
         }
 
         private bool IsObjectValid(object entity)
