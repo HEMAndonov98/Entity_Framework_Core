@@ -156,7 +156,10 @@ namespace MiniORM
 
         private bool IsObjectValid(object entity)
         {
-            throw new NotImplementedException();
+            var validationContext = new ValidationContext(entity);
+            var validationErrors = new List<ValidationResult>();
+            bool validationResult = Validator.TryValidateObject(entity, validationContext, validationErrors, true);
+            return validationResult;
         }
 
         private void MapAllRelations()
@@ -231,9 +234,35 @@ namespace MiniORM
             }
         }
 
-        private void MapNavigationProperties<TEntity>(DbSet<TEntity> dbSet) where TEntity : class, new()
+        private void MapNavigationProperties<TEntity>(DbSet<TEntity> dbSet)
+            where TEntity : class, new()
         {
-            throw new NotImplementedException();
+            var entityType = typeof(TEntity);
+            PropertyInfo[] foreignKeys = entityType
+                .GetProperties()
+                .Where(pi => pi.HasAttribute<ForeignKeyAttribute>())
+                .ToArray();
+
+            foreach (var foreignKey in foreignKeys)
+            {
+                string navigationPropertyName = foreignKey.GetCustomAttribute<ForeignKeyAttribute>().Name;
+                PropertyInfo navigationProperty = entityType.GetProperty(navigationPropertyName);
+
+                var navigationDbSet = this._dbSetProperties[navigationProperty.PropertyType]
+                    .GetValue(this);
+
+                var navigationPrimaryKey = navigationProperty.PropertyType.GetProperties().First(pi => pi.HasAttribute<ForeignKeyAttribute>());
+
+                foreach (var entity in dbSet)
+                {
+                    var foreignKeyValue = foreignKey.GetValue(entity);
+
+                    var navigationPropertyValue = ((IEnumerable<object>)navigationDbSet).First(currentNavigationProperty => navigationPrimaryKey.GetValue(currentNavigationProperty).Equals(foreignKeyValue));
+
+
+                    navigationProperty.SetValue(entity, navigationPropertyValue);
+                }
+            }
         }
 
         private IDictionary<Type, PropertyInfo>? DiscoverDbSets()
