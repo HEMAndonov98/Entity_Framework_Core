@@ -283,7 +283,11 @@ namespace MiniORM
 
         private IDictionary<Type, PropertyInfo>? DiscoverDbSets()
         {
-            throw new NotImplementedException();
+            var dbSets = this.GetType().GetProperties()
+                .Where(pi => pi.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>))
+                .ToDictionary(pi => pi.PropertyType.GetGenericArguments().First(), pi => pi);
+
+            return dbSets;
         }
     }
 }
