@@ -10,7 +10,7 @@ internal class DatabaseConnection
 {
     private readonly SqlConnection connection;
 
-    private SqlTransaction transaction;
+    private SqlTransaction? transaction;
 
     public DatabaseConnection(string connectionString)
     {

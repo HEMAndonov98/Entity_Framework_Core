@@ -4,6 +4,6 @@
     {
         // TODO: Create your DbSet class here.
 
-        public T[] Entities { get; set; }
+        public IEnumerable<T>? Entities { get; set; }
     }
 }
