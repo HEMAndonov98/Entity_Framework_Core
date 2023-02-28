@@ -4,6 +4,6 @@
     {
         // TODO: Create your DbContext class here.
 
-        public static IEnumerable<Type> AllowedSqlTypes { get; set; }
+        public static IEnumerable<Type>? AllowedSqlTypes { get; set; }
     }
 }
