@@ -59,7 +59,7 @@ namespace MiniORM
             {
                 using (var transaction = this._connection.StartTransaction())
                 {
-                    foreach (IEnumerable<object> dbSet in dbSets)
+                    foreach (IEnumerable dbSet in dbSets)
                     {
                         var dbSetType = dbSet.GetType().GetGenericArguments().First();
                         var persistMethod = typeof(DbContext)
@@ -122,7 +122,7 @@ namespace MiniORM
                 var dbSetType = dbSet.Key;
                 var dbSetProperty = dbSet.Value;
 
-                var populateDbsetGeneric = this.GetType()
+                var populateDbsetGeneric = typeof(DbContext)
                     .GetMethod("PopulateDbSet", BindingFlags.Instance | BindingFlags.NonPublic)
                     .MakeGenericMethod(dbSetType);
 
@@ -143,13 +143,13 @@ namespace MiniORM
             where TEntity : class, new()
         {
             var table = typeof(TEntity);
-            string[] columns = this.GetEntityColumns(table);
+            string[] columns = this.GetEntityColumnNames(table);
             string tableName = this.GetTableName(table);
             var fetchedRows = this._connection.FetchResultSet<TEntity>(tableName, columns).ToArray();
             return fetchedRows;
         }
 
-        private string[] GetEntityColumns(Type table)
+        private string[] GetEntityColumnNames(Type table)
         {
             var tableName = this.GetTableName(table);
             var dbColumns = this._connection.FetchColumnNames(tableName);
@@ -166,7 +166,7 @@ namespace MiniORM
 
         private string GetTableName(Type type)
         {
-            var tableName = type.Name;
+            var tableName = type.GetCustomAttribute<TableAttribute>().Name;
             if (tableName == null)
             {
                 tableName = this._dbSetProperties[type].Name;
@@ -188,11 +188,11 @@ namespace MiniORM
             foreach (var dbSetProperty in this._dbSetProperties)
             {
                 var dbSetType = dbSetProperty.Key;
-                var mapRelationsMethodGeneric = this.GetType()
+                var mapRelationsMethodGeneric = typeof(DbContext)
                     .GetMethod("MapRelations", BindingFlags.Instance | BindingFlags.NonPublic)
                     .MakeGenericMethod(dbSetType);
 
-                var dbSet = dbSetProperty.Value;
+                var dbSet = dbSetProperty.Value.GetValue(this);
 
                 mapRelationsMethodGeneric.Invoke(this, new object[] { dbSet });
             }
@@ -272,7 +272,7 @@ namespace MiniORM
                 var navigationDbSet = this._dbSetProperties[navigationProperty.PropertyType]
                     .GetValue(this);
 
-                var navigationPrimaryKey = navigationProperty.PropertyType.GetProperties().First(pi => pi.HasAttribute<ForeignKeyAttribute>());
+                var navigationPrimaryKey = navigationProperty.PropertyType.GetProperties().First(pi => pi.HasAttribute<KeyAttribute>());
 
                 foreach (var entity in dbSet)
                 {
