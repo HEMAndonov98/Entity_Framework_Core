@@ -5,7 +5,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        var connectionString = @"Server=localhost;Database=MiniORM;User Id=SA;Password=Password ;TrustServerCertificate=True";
+        var connectionString = @"Server=localhost;Database=MiniORM;User Id=SA;Password=SuperSecretPassword**;TrustServerCertificate=True";
 
         var context = new SoftUniDbContext(connectionString);
 

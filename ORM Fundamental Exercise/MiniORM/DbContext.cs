@@ -152,12 +152,13 @@ namespace MiniORM
         private string[] GetEntityColumnNames(Type table)
         {
             var tableName = this.GetTableName(table);
-            var dbColumns = this._connection.FetchColumnNames(tableName);
+            var dbColumns =
+                this._connection.FetchColumnNames(tableName);
 
             var columns = table.GetProperties()
                 .Where(pi => dbColumns.Contains(pi.Name) &&
-                !pi.HasAttribute<NotMappedAttribute>() &&
-                AllowedSqlTypes.Contains(pi.PropertyType))
+                        !pi.HasAttribute<NotMappedAttribute>() &&
+                        AllowedSqlTypes.Contains(pi.PropertyType))
                 .Select(pi => pi.Name)
                 .ToArray();
 
@@ -179,7 +180,8 @@ namespace MiniORM
         {
             var validationContext = new ValidationContext(entity);
             var validationErrors = new List<ValidationResult>();
-            bool validationResult = Validator.TryValidateObject(entity, validationContext, validationErrors, true);
+            bool validationResult =
+                Validator.TryValidateObject(entity, validationContext, validationErrors, true);
             return validationResult;
         }
 
@@ -205,13 +207,13 @@ namespace MiniORM
             this.MapNavigationProperties(dbSet);
             var collections = entityType.GetProperties()
                 .Where(pi => pi.PropertyType.IsGenericType &&
-                pi.PropertyType.GetGenericTypeDefinition() == typeof(ICollection))
+                pi.PropertyType.GetGenericTypeDefinition() == typeof(ICollection<>))
                 .ToArray();
 
             foreach (var collection in collections)
             {
-                var collectionType = collection.PropertyType.GetGenericArguments().First();
-                var mapCollectionMethodGeneric = collectionType
+                var collectionType = collection.PropertyType.GenericTypeArguments.First();
+                var mapCollectionMethodGeneric = typeof(DbContext)
                     .GetMethod("MapCollection", BindingFlags.Instance | BindingFlags.NonPublic)
                     .MakeGenericMethod(entityType, collectionType);
 
@@ -219,7 +221,7 @@ namespace MiniORM
             }
         }
 
-        private void MapCollectiion<TDbSet, TCollection>(DbSet<TDbSet> dbSet, PropertyInfo collectionProperty)
+        private void MapCollection<TDbSet, TCollection>(DbSet<TDbSet> dbSet, PropertyInfo collectionProperty)
             where TDbSet : class, new()
             where TCollection : class, new()
         {
@@ -231,27 +233,27 @@ namespace MiniORM
                 .ToArray();
 
             var primaryKey = primaryKeys.First();
-            var foreignKey = entityType.GetProperties().First(pi => pi.HasAttribute<KeyAttribute>());
+            var foreignKey = entityType.GetProperties()
+                .First(pi => pi.HasAttribute<KeyAttribute>());
 
-            var isManyToMany = primaryKeys.Length > 2;
+            var isManyToMany = primaryKeys.Length >= 2;
             if (isManyToMany)
             {
                 primaryKey = collectionType.GetProperties()
                     .First(pi => collectionType
-                        .GetProperty(pi.GetCustomAttribute<ForeignKeyAttribute>().Name)
-                        .PropertyType == entityType);
+                            .GetProperty(pi.GetCustomAttribute<ForeignKeyAttribute>().Name)
+                            .PropertyType == entityType);
+            }
 
-                var navigationDbSet = (DbSet<TCollection>)this._dbSetProperties[collectionType].GetValue(this);
+            var navigationDbSet = (DbSet<TCollection>)this._dbSetProperties[collectionType].GetValue(this);
+            foreach (var entity in dbSet)
+            {
+                var primaryKeyValue = foreignKey.GetValue(entity);
+                var navigationEntities = navigationDbSet
+                    .Where(navigationEntity => primaryKey.GetValue(navigationEntity).Equals(primaryKeyValue))
+                    .ToArray();
 
-                foreach (var entity in dbSet)
-                {
-                    var primaryKeyValue = foreignKey.GetValue(entity);
-                    var navigationEntities = navigationDbSet
-                        .Where(navigationEntity => primaryKey.GetValue(navigationEntity).Equals(primaryKeyValue))
-                        .ToArray();
-
-                    ReflectionHelper.ReplaceBackingField(entity, collectionProperty.Name, navigationEntities);
-                }
+                ReflectionHelper.ReplaceBackingField(entity, collectionProperty.Name, navigationEntities);
             }
         }
 
@@ -278,7 +280,8 @@ namespace MiniORM
                 {
                     var foreignKeyValue = foreignKey.GetValue(entity);
 
-                    var navigationPropertyValue = ((IEnumerable<object>)navigationDbSet).First(currentNavigationProperty => navigationPrimaryKey.GetValue(currentNavigationProperty).Equals(foreignKeyValue));
+                    var navigationPropertyValue = ((IEnumerable<object>)navigationDbSet)
+                        .First(currentNavigationProperty => navigationPrimaryKey.GetValue(currentNavigationProperty).Equals(foreignKeyValue));
 
 
                     navigationProperty.SetValue(entity, navigationPropertyValue);

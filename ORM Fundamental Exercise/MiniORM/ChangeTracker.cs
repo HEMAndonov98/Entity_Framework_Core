@@ -21,7 +21,7 @@ namespace MiniORM
         }
 
         public ChangeTracker(IEnumerable<T> entities)
-            : base()
+            : this()
         {
             this._allEntities = CloneEntities(entities);
         }
@@ -53,15 +53,15 @@ namespace MiniORM
         public IEnumerable<T> GetModifiedEntities(DbSet<T> dbSet)
         {
             var modifiedEntities = new List<T>();
-            var primaryKeys = typeof(T)
-                .GetProperties()
+            var primaryKeys = typeof(T).GetProperties()
                 .Where(pi => pi.HasAttribute<KeyAttribute>())
                 .ToArray();
 
             foreach (var proxyEntitiy in AllEntities)
             {
                 var primaryKeyValues = GetPrimaryKeyValues(primaryKeys, proxyEntitiy);
-                var entity = dbSet.Entities.Single(e => GetPrimaryKeyValues(primaryKeys, e).SequenceEqual(primaryKeyValues));
+                var entity = dbSet.Entities
+                    .Single(e => GetPrimaryKeyValues(primaryKeys, e).SequenceEqual(primaryKeyValues));
 
                 bool isModified = IsModified(proxyEntitiy, entity);
 
@@ -85,7 +85,7 @@ namespace MiniORM
             return modifiedProperties.Any();
         }
 
-        private static IEnumerable<object> GetPrimaryKeyValues(PropertyInfo[] primaryKeys, T proxyEntitiy)
-            => primaryKeys.Select(pk => pk.GetValue(proxyEntitiy));
+        private static IEnumerable<object> GetPrimaryKeyValues(IEnumerable<PropertyInfo> primaryKeys, T entity)
+            => primaryKeys.Select(pk => pk.GetValue(entity));
     }
 }
