@@ -5,10 +5,8 @@ class Program
 {
     static async Task Main()
     {
-        var connectionString = @"Server=localhost;Database=MiniORM;User Id=SA;Password=Hristomen0876570010;TrustServerCertificate=True";
-
-        
-        
+        var connectionString =
+            @"Server=localhost;Database=MiniORM;User Id=SA;Password=SuperSecretPassWord**;TrustServerCertificate=True";
         
         var context = new SoftUniDbContext(connectionString);
 
