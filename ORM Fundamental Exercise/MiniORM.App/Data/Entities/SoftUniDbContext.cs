@@ -1,5 +1,6 @@
 ﻿using System;
 using MiniORM;
+using MiniORM.App.Data.Entities;
 
 namespace Data.Entities
 {
@@ -9,6 +10,7 @@ namespace Data.Entities
 			:base(connectionString)
 		{
 		}
+
 
 		public DbSet<Employee> Employees { get; }
 

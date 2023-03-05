@@ -1,8 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Data.Entities;
 
-namespace Data.Entities
+namespace MiniORM.App.Data.Entities
 {
 	[Table("Departments")]
 	public class Department
@@ -11,13 +11,9 @@ namespace Data.Entities
 		public int Id { get; set; }
 
 		[Required]
-		public string Name { get; set; }
+		public string? Name { get; set; }
 
-		public ICollection<Employee> Employees { get; }
-
-		public Department()
-		{
-		}
+		public ICollection<Employee>? Employees { get; }
 	}
 }
 
