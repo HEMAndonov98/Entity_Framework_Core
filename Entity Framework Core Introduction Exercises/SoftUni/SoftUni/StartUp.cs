@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using SoftUni.Data;
+using SoftUni.Models;
 
 namespace SoftUni;
 
@@ -10,6 +11,7 @@ public class StartUp
     static void Main(string[] args)
     {
         SoftUniContext context = new SoftUniContext();
+        Console.WriteLine(GetEmployeesFromResearchAndDevelopment(context));
     }
 
     public static string GetEmployeesFullInformation(SoftUniContext context)
@@ -55,6 +57,33 @@ public class StartUp
         foreach (var e in employees)
         {
             sb.AppendLine($"{e.FirstName} - {e.Salary:F2}");
+        }
+        return sb.ToString().Trim();
+    }
+
+    public static string GetEmployeesFromResearchAndDevelopment(SoftUniContext context)
+    {
+        var sb = new StringBuilder();
+        var employeesDepartmentsJoin = context.Departments
+            .AsNoTracking()
+            .Join(context.Employees,
+                d => d.DepartmentId,
+                e => e.DepartmentId,
+                (d, e) => new
+                {
+                    FirstName = e.FirstName,
+                    LastName = e.LastName,
+                    Department = d.Name,
+                    Salary = e.Salary
+                })
+            .Where(ed => ed.Department == "Research and Development")
+            .OrderBy(ed => ed.Salary)
+            .ThenByDescending(ed => ed.FirstName)
+            .ToList();
+
+        foreach (var ed in employeesDepartmentsJoin)
+        {
+            sb.AppendLine($"{ed.FirstName} {ed.LastName} from {ed.Department} - ${ed.Salary:F2}");
         }
         return sb.ToString().Trim();
     }
