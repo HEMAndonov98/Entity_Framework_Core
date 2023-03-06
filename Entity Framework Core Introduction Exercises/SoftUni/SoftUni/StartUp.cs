@@ -39,16 +39,24 @@ public class StartUp
     
     public static string GetEmployeesWithSalaryOver50000(SoftUniContext context)
     {
+        var sb = new StringBuilder();
         var employees = context.Employees
             .AsNoTracking()
             .Where(e => e.Salary > 50000)
             .Select(e => new 
             {
-                e.FirstName, e.Salary
+                e.FirstName,
+                e.Salary
             })
+            .OrderBy(e => e.FirstName)
             .ToList();
 
-        return null;
+
+        foreach (var e in employees)
+        {
+            sb.AppendLine($"{e.FirstName} - {e.Salary:F2}");
+        }
+        return sb.ToString().Trim();
     }
 }
 
