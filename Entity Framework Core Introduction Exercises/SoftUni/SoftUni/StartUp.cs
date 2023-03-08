@@ -12,7 +12,7 @@ public class StartUp
     {
         using (SoftUniContext context = new SoftUniContext())
         {
-            Console.WriteLine(GetEmployeesInPeriod(context));
+            Console.WriteLine(GetAddressesByTown(context));
         }
     }
 
@@ -163,5 +163,27 @@ public class StartUp
         }
 
         return sb.ToString().Trim();
+    }
+
+    public static string GetAddressesByTown(SoftUniContext context)
+    {
+        var sb = new StringBuilder();
+        var addresses = context.Addresses
+            .OrderByDescending(a => a.Employees.Count)
+            .ThenBy(a => a.Town.Name)
+            .ThenBy(a => a.AddressText)
+            .Take(10)
+            .Select(a => new
+            {
+                a.AddressText,
+                TownName = a.Town.Name,
+                EmployeeCount = a.Employees.Count
+            })
+            .ToList();
+
+        foreach (var a in addresses) sb.AppendLine($"{a.AddressText}, {a.TownName} - {a.EmployeeCount} employees");
+
+        return sb.ToString()
+            .Trim();
     }
 }
