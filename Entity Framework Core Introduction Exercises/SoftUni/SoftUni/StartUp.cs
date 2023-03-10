@@ -12,7 +12,7 @@ public class StartUp
     {
         using (SoftUniContext context = new SoftUniContext())
         {
-            Console.WriteLine(GetEmployee147(context));
+            Console.WriteLine(GetDepartmentsWithMoreThan5Employees(context));
         }
     }
 
@@ -206,6 +206,43 @@ public class StartUp
 
         sb.AppendLine($"{employee.FirstName} {employee.LastName} - {employee.JobTitle}");
         sb.AppendJoin(Environment.NewLine, projects.Select(p => p.Name));
+
+        return sb.ToString()
+            .Trim();
+    }
+
+    public static string GetDepartmentsWithMoreThan5Employees(SoftUniContext context)
+    {
+        var sb = new StringBuilder();
+        var dptsWithMoreThan5Employees = context.Departments
+            .AsNoTracking()
+            .Where(dpt => dpt.Employees.Count > 5)
+            .OrderBy(dpt => dpt.Employees.Count)
+            .ThenBy(dpt => dpt.Name)
+            .Select(dpt => new
+            {
+                Name = dpt.Name,
+                ManagerName = $"{dpt.Manager.FirstName} {dpt.Manager.LastName}",
+                Employees = dpt.Employees
+                    .OrderBy(e => e.FirstName)
+                    .ThenBy(e => e.LastName)
+                    .Select(e => new
+                    {
+                        Name = $"{e.FirstName} {e.LastName}",
+                        JobTitle = e.JobTitle
+                    })
+            })
+            .AsSplitQuery()
+            .ToList();
+
+        foreach (var dpt in dptsWithMoreThan5Employees)
+        {
+            sb.AppendLine($"{dpt.Name} - {dpt.ManagerName}");
+            foreach (var e in dpt.Employees)
+            {
+                sb.AppendLine($"{e.Name} - {e.JobTitle}");
+            }
+        }
 
         return sb.ToString()
             .Trim();
