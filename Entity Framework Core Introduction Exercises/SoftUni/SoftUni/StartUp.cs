@@ -12,7 +12,20 @@ public class StartUp
     {
         using (SoftUniContext context = new SoftUniContext())
         {
-            Console.WriteLine(GetLatestProjects(context));
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    Console.WriteLine(IncreaseSalaries(context));
+                    transaction.Rollback();
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
         }
     }
 
@@ -270,6 +283,35 @@ public class StartUp
             sb.AppendLine($"{project.Name}");
             sb.AppendLine($"{project.Description}");
             sb.AppendLine($"{project.StartDate.ToString("M/d/yyyy h:mm:ss tt")}");
+        }
+
+        return sb.ToString()
+            .Trim();
+    }
+
+    public static string IncreaseSalaries(SoftUniContext context)
+    {
+        decimal percentageIncrease = (decimal)1.12;
+        var sb = new StringBuilder();
+        
+        var promotedEmployees = context.Employees
+            .Where(e => e.Department.Name.Contains("Engineering") ||
+                        e.Department.Name.Contains("Tool Design") ||
+                        e.Department.Name.Contains("Marketing") ||
+                        e.Department.Name.Contains("Information Services"))
+            .OrderBy(e => e.FirstName)
+            .ThenBy(e => e.LastName)
+            .Select(e => new
+            {
+                FullName = $"{e.FirstName} {e.LastName}",
+                Salary = (e.Salary * percentageIncrease)
+            });
+
+        context.SaveChanges();
+
+        foreach (var employee in promotedEmployees)
+        {
+            sb.AppendLine($"{employee.FullName} (${employee.Salary:F2})");
         }
 
         return sb.ToString()
