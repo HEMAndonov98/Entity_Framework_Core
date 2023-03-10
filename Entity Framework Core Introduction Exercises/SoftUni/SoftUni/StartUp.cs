@@ -12,7 +12,7 @@ public class StartUp
     {
         using (SoftUniContext context = new SoftUniContext())
         {
-            Console.WriteLine(GetAddressesByTown(context));
+            Console.WriteLine(GetEmployee147(context));
         }
     }
 
@@ -169,6 +169,7 @@ public class StartUp
     {
         var sb = new StringBuilder();
         var addresses = context.Addresses
+            .AsNoTracking()
             .OrderByDescending(a => a.Employees.Count)
             .ThenBy(a => a.Town.Name)
             .ThenBy(a => a.AddressText)
@@ -181,7 +182,30 @@ public class StartUp
             })
             .ToList();
 
-        foreach (var a in addresses) sb.AppendLine($"{a.AddressText}, {a.TownName} - {a.EmployeeCount} employees");
+        foreach (var a in addresses)
+            sb.AppendLine($"{a.AddressText}, {a.TownName} - {a.EmployeeCount} employees");
+
+        return sb.ToString()
+            .Trim();
+    }
+
+    public static string GetEmployee147(SoftUniContext context)
+    {
+        var sb = new StringBuilder();
+        
+        int idToSearch = 147;
+        var employee = context.Employees
+            .Find(idToSearch);
+        var projects = employee.EmployeesProjects
+            .Select(ep => new
+            {
+                Name = ep.Project.Name
+            })
+            .OrderBy(p => p.Name)
+            .ToList();
+
+        sb.AppendLine($"{employee.FirstName} {employee.LastName} - {employee.JobTitle}");
+        sb.AppendJoin(Environment.NewLine, projects.Select(p => p.Name));
 
         return sb.ToString()
             .Trim();
