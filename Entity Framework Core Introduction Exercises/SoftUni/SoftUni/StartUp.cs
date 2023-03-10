@@ -12,7 +12,7 @@ public class StartUp
     {
         using (SoftUniContext context = new SoftUniContext())
         {
-            Console.WriteLine(GetDepartmentsWithMoreThan5Employees(context));
+            Console.WriteLine(GetLatestProjects(context));
         }
     }
 
@@ -242,6 +242,34 @@ public class StartUp
             {
                 sb.AppendLine($"{e.Name} - {e.JobTitle}");
             }
+        }
+
+        return sb.ToString()
+            .Trim();
+    }
+
+    public static string GetLatestProjects(SoftUniContext context)
+    {
+        var sb = new StringBuilder();
+
+        var latestProjects = context.Projects
+            .AsNoTracking()
+            .OrderByDescending(p => p.StartDate)
+            .Take(10)
+            .Select(p => new
+            {
+                Name = p.Name,
+                Description = p.Description,
+                StartDate = p.StartDate
+            })
+            .OrderBy(p => p.Name)
+            .ToList();
+
+        foreach (var project in latestProjects)
+        {
+            sb.AppendLine($"{project.Name}");
+            sb.AppendLine($"{project.Description}");
+            sb.AppendLine($"{project.StartDate.ToString("M/d/yyyy h:mm:ss tt")}");
         }
 
         return sb.ToString()
