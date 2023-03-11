@@ -16,7 +16,7 @@ public class StartUp
             {
                 try
                 {
-                    Console.WriteLine(GetEmployeesByFirstNameStartingWithSa(context));
+                    Console.WriteLine(DeleteProjectById(context));
                     transaction.Rollback();
                 }
                 catch (Exception e)
@@ -339,6 +339,32 @@ public class StartUp
             sb.AppendLine($"{employee.FullName} - {employee.JobTitle} - ({employee.Salary})");
         }
 
+        return sb.ToString()
+            .Trim();
+    }
+
+    public static string DeleteProjectById(SoftUniContext context)
+    {
+        var sb = new StringBuilder();
+        var projectToDelete = context.Projects
+            .Find(2);
+
+        var projectEmployees = context.EmployeesProjects
+            .Where(ep => ep.ProjectId == 2);
+
+        foreach (var ep in projectEmployees)
+        {
+            context.Remove(ep);
+        }
+
+        context.Remove(projectToDelete);
+        context.SaveChanges();
+
+        sb.AppendJoin(Environment.NewLine,
+            context.Projects
+                .Take(10)
+                .Select(p => p.Name));
+        
         return sb.ToString()
             .Trim();
     }
