@@ -16,7 +16,7 @@ public class StartUp
             {
                 try
                 {
-                    Console.WriteLine(IncreaseSalaries(context));
+                    Console.WriteLine(GetEmployeesByFirstNameStartingWithSa(context));
                     transaction.Rollback();
                 }
                 catch (Exception e)
@@ -312,6 +312,31 @@ public class StartUp
         foreach (var employee in promotedEmployees)
         {
             sb.AppendLine($"{employee.FullName} (${employee.Salary:F2})");
+        }
+
+        return sb.ToString()
+            .Trim();
+    }
+
+    public  static  string GetEmployeesByFirstNameStartingWithSa(SoftUniContext context)
+    {
+        var sb = new StringBuilder();
+        var saEmployees = context.Employees
+            .AsNoTracking()
+            .Where(e => e.FirstName.ToLower().StartsWith("sa"))
+            .OrderBy(e => e.FirstName)
+            .ThenBy(e => e.LastName)
+            .Select(e => new
+            {
+                FullName = $"{e.FirstName} {e.LastName}",
+                JobTitle = e.JobTitle,
+                Salary = $"${e.Salary:F2}"
+            })
+            .ToList();
+
+        foreach (var employee in saEmployees)
+        {
+            sb.AppendLine($"{employee.FullName} - {employee.JobTitle} - ({employee.Salary})");
         }
 
         return sb.ToString()
