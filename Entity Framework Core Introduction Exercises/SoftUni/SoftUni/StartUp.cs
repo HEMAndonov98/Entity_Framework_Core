@@ -16,7 +16,7 @@ public class StartUp
             {
                 try
                 {
-                    Console.WriteLine(DeleteProjectById(context));
+                    Console.WriteLine(RemoveTown(context));
                     transaction.Rollback();
                 }
                 catch (Exception e)
@@ -367,5 +367,34 @@ public class StartUp
         
         return sb.ToString()
             .Trim();
+    }
+
+    public static string RemoveTown(SoftUniContext context)
+    {
+        var townToDelete = context.Towns
+            .FirstOrDefault(t => t.Name == "Seattle");
+        
+        //Note if in real example you should put if statement to check if the town actually exists
+
+        var addressesToDelete = context.Addresses
+            .Where(a => a.Town == townToDelete);
+
+        int deletedAddressesCount = addressesToDelete.Count();
+
+        var employees = context.Employees
+            .Include(e => e.Address)
+            .Where(e => e.Address.Town == townToDelete)
+            .ToList();
+
+        foreach (var employee in employees)
+        {
+            employee.Address = null;
+        }
+        
+        context.Addresses.RemoveRange(addressesToDelete);
+        context.Towns.Remove(townToDelete);
+        context.SaveChanges();
+
+        return $"{deletedAddressesCount} addresses in Seattle were deleted";
     }
 }
