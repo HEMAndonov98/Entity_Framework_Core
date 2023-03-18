@@ -1,6 +1,6 @@
 namespace MusicHub.Data.Models.Enums;
 
-public enum Genres
+public enum Genre
 {
     Blues,
     Rap,

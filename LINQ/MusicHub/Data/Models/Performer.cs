@@ -1,20 +1,26 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using MusicHub.Common;
 
 namespace MusicHub.Data.Models;
 
 public class Performer
 {
+    public Performer()
+    {
+        this.PerformerSongs = new HashSet<SongPerformer>();
+    }
+    
     [Key]
-    public int PerformerId { get; set; }
+    public int Id { get; set; }
 
     [Required]
     [MaxLength(ModelValidations.PerformerNameMaxLength)]
-    public string FirstName { get; set; }
+    public string FirstName { get; set; } = null!;
 
     [Required]
     [MaxLength(ModelValidations.PerformerNameMaxLength)]
-    public string LastName { get; set; }
+    public string LastName { get; set; } = null!;
 
     [Required]
     public int Age { get; set; }
@@ -22,5 +28,6 @@ public class Performer
     [Required]
     public decimal NetWorth { get; set; }
     
-    //TODO Create ICollection of SongPerformers for many to many relation
+    [InverseProperty(nameof(Performer))]
+    public ICollection<SongPerformer> PerformerSongs { get; set; } = null!;
 }

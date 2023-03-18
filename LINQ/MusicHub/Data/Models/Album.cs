@@ -1,12 +1,18 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using MusicHub.Common;
 
 namespace MusicHub.Data.Models;
 
 public class Album
 {
+    public Album()
+    {
+        this.Songs = new HashSet<Song>();
+    }
+    
     [Key]
-    public int AlbumId { get; set; }
+    public int Id { get; set; }
 
     [Required]
     [MaxLength(ModelValidations.AlbumNameMaxLength)]
@@ -15,11 +21,14 @@ public class Album
     [Required]
     public DateTime ReleaseDate { get; set; }
 
-    //TODO public decimal Price = Songs.Price.Sum()
-
-    public int ProducerId { get; set; }
+    public decimal Price => this.Songs
+        .Select(s => s.Price)
+        .Sum();
     
-    //TODO Foreign key for ProducerId and navigational property
+    [ForeignKey(nameof(Producer))]
+    public int? ProducerId { get; set; }
+    public Producer Producer { get; set; } = null!;
     
-    //TODO Create a collection navigational property of type song
+    [InverseProperty(nameof(Album))]
+    public ICollection<Song> Songs { get; set; }
 }

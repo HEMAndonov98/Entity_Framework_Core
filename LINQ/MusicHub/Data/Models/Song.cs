@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using MusicHub.Common;
 using MusicHub.Data.Models.Enums;
 
@@ -6,31 +7,36 @@ namespace MusicHub.Data.Models;
 
 public class Song
 {
+    public Song()
+    {
+        this.SongPerformers = new HashSet<SongPerformer>();
+    }
+    
     [Key]
-    public int SongId { get; set; }
+    public int Id { get; set; }
 
     [Required]
     [MaxLength(ModelValidations.SongNameMaxLength)]
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
+
+    [Required] public TimeSpan Duration { get; init; }
+
+    [Required] public DateTime CreatedOn { get; init; }
 
     [Required]
-    public TimeSpan Duration { get; set; }
+    public Genre Genre { get; set; }
 
-    [Required]
-    public DateTime CreatedOn { get; set; }
+    [ForeignKey(nameof(Album))]
+    public int? AlbumId { get; set; }
 
-    [Required]
-    public Genres Genre { get; set; }
-
-    public int AlbumId { get; set; }
+    public Album Album { get; set; }
     
-    //TODO Create Foreign key and navigation property to Album
-
+    [ForeignKey(nameof(Writer))]
     public int WriterId { get; set; }
-    
-    //TODO Create Foreign key and navigation property to Writer
+    public Writer Writer { get; set; }
 
     public decimal Price { get; set; }
     
-    //TODO Create ICollection of SongPerformers for many to many relation
+    [InverseProperty(nameof(Song))] 
+    public ICollection<SongPerformer> SongPerformers { get; set; } = null!;
 }
