@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicHub", "MusicHub\MusicHub.csproj", "{3E5E9B19-7E38-43A2-83D8-0F2AF6C6A715}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{5C8F87C6-8726-44FC-8281-B5DDBB9039A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{3E5E9B19-7E38-43A2-83D8-0F2AF6C6A715}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E5E9B19-7E38-43A2-83D8-0F2AF6C6A715}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E5E9B19-7E38-43A2-83D8-0F2AF6C6A715}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C8F87C6-8726-44FC-8281-B5DDBB9039A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C8F87C6-8726-44FC-8281-B5DDBB9039A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C8F87C6-8726-44FC-8281-B5DDBB9039A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C8F87C6-8726-44FC-8281-B5DDBB9039A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
