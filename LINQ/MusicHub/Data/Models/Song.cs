@@ -31,4 +31,6 @@ public class Song
     //TODO Create Foreign key and navigation property to Writer
 
     public decimal Price { get; set; }
+    
+    //TODO Create ICollection of SongPerformers for many to many relation
 }

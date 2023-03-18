@@ -4,6 +4,8 @@
 
     public class MusicHubDbContext : DbContext
     {
+        //TODO create property DbSet<Song>
+        //TODO Create property DbSet<Album>
         public MusicHubDbContext()
         {
         }
@@ -25,6 +27,13 @@
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
+            //Song
+            
+            //TODO Set Property of song to be specific length of decimal
+            
+            //Performer
+            
+            //TODO Set property of net worth to specific length of decimal
         }
     }
 }
