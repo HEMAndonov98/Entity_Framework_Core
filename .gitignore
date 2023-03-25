@@ -422,4 +422,4 @@ FodyWeavers.xsd
 .idea
 
 # Entity Framework
-**/Data/Configuration.cs
+**/*Data/Configuration.cs
