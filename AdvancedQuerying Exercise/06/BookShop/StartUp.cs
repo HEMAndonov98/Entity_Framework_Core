@@ -14,7 +14,7 @@ namespace BookShop
         {
             using var db = new BookShopContext();
             //DbInitializer.ResetDatabase(db);
-            Console.WriteLine(GetBooksByAgeRestriction(db, Console.ReadLine()));
+            Console.WriteLine(GetGoldenBooks(db));
         }
 
         public static string GetBooksByAgeRestriction(BookShopContext context, string command)
@@ -37,6 +37,20 @@ namespace BookShop
                 Console.WriteLine(e.Message);
                 throw;
             }
+        }
+
+        public static string GetGoldenBooks(BookShopContext context)
+        {
+            int maxCopies = 5000;
+            string[] bookTitles = context.Books
+                .AsNoTracking()
+                .Where(b => b.EditionType == EditionType.Gold &&
+                                 b.Copies < maxCopies)
+                .OrderBy(b => b.BookId)
+                .Select(b => b.Title)
+                .ToArray();
+
+            return string.Join(Environment.NewLine, bookTitles).Trim();
         }
     }
 }
