@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using BookShop.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +13,7 @@ namespace BookShop
         {
             using var db = new BookShopContext();
             //DbInitializer.ResetDatabase(db);
-            Console.WriteLine(GetBooksByPrice(db));
+            Console.WriteLine(GetBooksNotReleasedIn(db, int.Parse(Console.ReadLine()!)));
         }
 
         public static string GetBooksByAgeRestriction(BookShopContext context, string command)
@@ -78,6 +76,18 @@ namespace BookShop
             
             return sb.ToString()
                 .Trim();
+        }
+
+        public static string GetBooksNotReleasedIn(BookShopContext context, int year)
+        {
+            string[] bookTitles = context.Books
+                .AsNoTracking()
+                .Where(b => b.ReleaseDate!.Value.Year != year)
+                .OrderBy(b => b.BookId)
+                .Select(b => b.Title)
+                .ToArray();
+            
+            return string.Join(Environment.NewLine, bookTitles);
         }
     }
 }
