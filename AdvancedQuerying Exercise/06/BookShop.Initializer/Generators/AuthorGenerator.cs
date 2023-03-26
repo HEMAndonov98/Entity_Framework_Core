@@ -1,5 +1,4 @@
-﻿
-using Models;
+﻿using BookShop.Models;
 
 namespace BookShop.Initializer.Generators
 {

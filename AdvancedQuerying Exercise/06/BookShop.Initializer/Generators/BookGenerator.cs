@@ -1,5 +1,5 @@
-﻿using Models;
-using Models.Enums;
+﻿using BookShop.Models;
+using BookShop.Models.Enums;
 
 namespace BookShop.Initializer.Generators
 {
@@ -230,7 +230,7 @@ namespace BookShop.Initializer.Generators
                 int edition = int.Parse(bookTokens[0]);
                 DateTime releaseDate = DateTime.ParseExact(bookTokens[1], "d/M/yyyy", CultureInfo.InvariantCulture);
                 int copies = int.Parse(bookTokens[2]);
-                decimal price = decimal.Parse(bookTokens[3]);
+                decimal price = decimal.Parse(bookTokens[3], CultureInfo.InvariantCulture);
                 int ageRestriction = int.Parse(bookTokens[4]);
                 string title = String.Join(" ", bookTokens, 5, bookTokens.Length - 5);
                 Category category = categories[i / 10];

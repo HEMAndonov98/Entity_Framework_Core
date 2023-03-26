@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace BookShop.Initializer
+﻿namespace BookShop.Initializer
 {
     using System;
 
@@ -17,7 +15,7 @@ namespace BookShop.Initializer
 
             Console.WriteLine("BookShop database created successfully.");
 
-            //Seed(context);
+            Seed(context);
         }
 
         public static void Seed(BookShopContext context)
