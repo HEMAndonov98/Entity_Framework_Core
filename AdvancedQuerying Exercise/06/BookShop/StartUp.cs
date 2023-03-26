@@ -13,7 +13,7 @@ namespace BookShop
         {
             using var db = new BookShopContext();
             //DbInitializer.ResetDatabase(db);
-            Console.WriteLine(GetBooksNotReleasedIn(db, int.Parse(Console.ReadLine()!)));
+            Console.WriteLine(GetBooksByCategory(db, Console.ReadLine()));
         }
 
         public static string GetBooksByAgeRestriction(BookShopContext context, string command)
@@ -88,6 +88,28 @@ namespace BookShop
                 .ToArray();
             
             return string.Join(Environment.NewLine, bookTitles);
+        }
+
+        public static string GetBooksByCategory(BookShopContext context, string input)
+        {
+            string[] categoryTokens = input.Split(" ", StringSplitOptions.RemoveEmptyEntries)
+                .Select(ct => ct.ToLower())
+                .ToArray();
+
+            string[] bookTitles = context.BooksCategories
+                .AsNoTracking()
+                .Include(bc => bc.Book)
+                .Include(bc => bc.Category)
+                .Where(bc => categoryTokens.Contains(bc.Category.Name.ToLower()))
+                .Select(bc => bc.Book.Title)
+                .OrderBy(b => b)
+                .ToArray();
+
+            //Another possible solution using lazy loading would have us including only the categories for the first filtering
+            //and from then on dynamically load all the book titles from the finished query meaning there would be one filtering query
+            //and from that query we would load all the book titles the query will be something like SELECT Title FROM Books WHERE BookId = Result
+
+            return string.Join(Environment.NewLine, bookTitles).Trim();
         }
     }
 }
