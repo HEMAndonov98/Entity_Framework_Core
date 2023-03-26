@@ -42,8 +42,7 @@ namespace P02_FootballBetting.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(
-                    "Server=localhost;Database=FootballBetting;User Id=SA;Password=Hristomen0876570010;TrustServerCertificate=True");
+                optionsBuilder.UseSqlServer("Put your connection string here");
             }
         }
 
