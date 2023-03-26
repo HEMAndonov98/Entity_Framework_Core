@@ -24,8 +24,7 @@ public class StudentSystemContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer(
-                "Server=localhost;Database=StudentSystem;User Id=SA;Password=Hristomen0876570010;TrustServerCertificate=True");
+            optionsBuilder.UseSqlServer("Put your connection string here");
         }
     }
 
