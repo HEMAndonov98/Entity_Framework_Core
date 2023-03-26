@@ -1,4 +1,6 @@
-﻿using BookShop.Models.Enums;
+﻿using System;
+using System.Linq;
+using BookShop.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookShop
