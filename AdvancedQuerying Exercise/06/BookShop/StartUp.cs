@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using BookShop.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +15,7 @@ namespace BookShop
         {
             using var db = new BookShopContext();
             //DbInitializer.ResetDatabase(db);
-            Console.WriteLine(GetGoldenBooks(db));
+            Console.WriteLine(GetBooksByPrice(db));
         }
 
         public static string GetBooksByAgeRestriction(BookShopContext context, string command)
@@ -51,6 +52,32 @@ namespace BookShop
                 .ToArray();
 
             return string.Join(Environment.NewLine, bookTitles).Trim();
+        }
+
+        public static string GetBooksByPrice(BookShopContext context)
+        {
+            int minBookPrice = 40;
+            var booksAndPrices = context.Books
+                .AsNoTracking()
+                .Where(b => b.Price > minBookPrice)
+                .OrderByDescending(b => b.Price)
+                .Select(b => new
+                    {
+                        b.Title,
+                        b.Price
+                    })
+                .ToArray();
+
+
+            var sb = new StringBuilder();
+
+            foreach (var book in booksAndPrices)
+            {
+                sb.AppendLine($"{book.Title} - ${book.Price:F2}");
+            }
+            
+            return sb.ToString()
+                .Trim();
         }
     }
 }
