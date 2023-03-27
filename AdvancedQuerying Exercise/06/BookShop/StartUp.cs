@@ -16,7 +16,7 @@ namespace BookShop
         {
             using var db = new BookShopContext();
             DbInitializer.ResetDatabase(db);
-            Console.WriteLine(GetBookTitlesContaining(db, Console.ReadLine()));
+            Console.WriteLine(GetBooksByAuthor(db, Console.ReadLine()));
         }
 
         public static string GetBooksByAgeRestriction(BookShopContext context, string command)
@@ -171,6 +171,22 @@ namespace BookShop
                 .ToArray();
 
             return string.Join(Environment.NewLine, bookTitles);
+        }
+
+        public static string GetBooksByAuthor(BookShopContext context, string input)
+        {
+            var booksWithAuthors = context.Books
+                .Include(b => b.Author)
+                .AsNoTracking()
+                .Where(b => b.Author.LastName
+                    .ToLower()
+                    .StartsWith(input
+                        .ToLower()))
+                .OrderBy(b => b.BookId)
+                .Select(b => $"{b.Title} ({b.Author.FirstName} {b.Author.LastName})")
+                .ToArray();
+
+            return string.Join(Environment.NewLine, booksWithAuthors);
         }
     }
 }
