@@ -14,7 +14,7 @@ namespace BookShop
         {
             using var db = new BookShopContext();
             //DbInitializer.ResetDatabase(db);
-            Console.WriteLine(CountCopiesByAuthor(db));
+            Console.WriteLine(GetTotalProfitByCategory(db));
         }
 
         public static string GetBooksByAgeRestriction(BookShopContext context, string command)
@@ -221,6 +221,32 @@ namespace BookShop
                 .ToString()
                 .Trim();
         }
+
+        public static string GetTotalProfitByCategory(BookShopContext context)
+        {
+            var categoryProfits = context.Categories
+                .Include(c => c.CategoryBooks)
+                .ThenInclude(cb => cb.Book)
+                .AsNoTracking()
+                .Select(c => new
+                {
+                    c.Name,
+                    TotalProfit = c.CategoryBooks
+                        .Select(cb => cb.Book.Copies * cb.Book.Price)
+                        .Sum()
+                })
+                .OrderByDescending(catProfit => catProfit.TotalProfit)
+                .ToArray();
+
+            StringBuilder sb = new StringBuilder();
+
+            return sb.AppendJoin(Environment.NewLine, categoryProfits
+                    .Select(cp => $"{cp.Name} ${cp.TotalProfit:F2}"))
+                .ToString()
+                .Trim();
+        }
+        
+        
     }
 }
 
