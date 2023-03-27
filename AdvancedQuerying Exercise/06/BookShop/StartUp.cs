@@ -295,6 +295,19 @@ namespace BookShop
 
             context.SaveChanges();
         }
+
+        public static int RemoveBooks(BookShopContext context)
+        {
+            var booksToRemove = context.Books
+                .Where(b => b.Copies < 4200);
+
+            int removedCount = booksToRemove.Count();
+            
+            context.Books.RemoveRange(booksToRemove);
+
+            context.SaveChanges();
+            return removedCount;
+        }
     }
 }
 
