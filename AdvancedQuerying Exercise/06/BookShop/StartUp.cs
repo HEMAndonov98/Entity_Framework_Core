@@ -13,8 +13,7 @@ namespace BookShop
         public static void Main()
         {
             using var db = new BookShopContext();
-            //DbInitializer.ResetDatabase(db);
-            Console.WriteLine(GetMostRecentBooks(db));
+            DbInitializer.ResetDatabase(db);
         }
 
         public static string GetBooksByAgeRestriction(BookShopContext context, string command)
@@ -281,6 +280,20 @@ namespace BookShop
 
             return sb.ToString()
                 .Trim();
+        }
+
+        public static void IncreasePrices(BookShopContext context)
+        {
+            var books = context.Books
+                .Where(b => b.ReleaseDate.Value.Year < 2010)
+                .ToList();
+
+            foreach (var book in books)
+            {
+                book.Price += 5;
+            }
+
+            context.SaveChanges();
         }
     }
 }
