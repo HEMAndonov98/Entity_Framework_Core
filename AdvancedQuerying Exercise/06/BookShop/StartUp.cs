@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
 using System.Text;
+using BookShop.Models;
 using BookShop.Models.Enums;
+using Castle.Core.Internal;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookShop
@@ -13,8 +15,8 @@ namespace BookShop
         public static void Main()
         {
             using var db = new BookShopContext();
-            //DbInitializer.ResetDatabase(db);
-            Console.WriteLine(GetBooksReleasedBefore(db, Console.ReadLine()));
+            DbInitializer.ResetDatabase(db);
+            Console.WriteLine(GetAuthorNamesEndingIn(db, Console.ReadLine()));
         }
 
         public static string GetBooksByAgeRestriction(BookShopContext context, string command)
@@ -144,6 +146,19 @@ namespace BookShop
                 Console.WriteLine(e.Message);
                 throw;
             }
+        }
+
+        public static string GetAuthorNamesEndingIn(BookShopContext context, string input)
+        {
+            string[] authors = context.Authors
+                .AsNoTracking()
+                .Where(a => a.FirstName.ToLower().EndsWith(input.ToLower()))
+                .OrderBy(a => a.FirstName)
+                .ThenBy(a => a.LastName)
+                .Select(a => $"{a.FirstName} {a.LastName}")
+                .ToArray();
+
+            return string.Join(Environment.NewLine, authors);
         }
     }
 }
