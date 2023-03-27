@@ -14,7 +14,7 @@ namespace BookShop
         {
             using var db = new BookShopContext();
             //DbInitializer.ResetDatabase(db);
-            Console.WriteLine(CountBooks(db, int.Parse(Console.ReadLine())));
+            Console.WriteLine(CountCopiesByAuthor(db));
         }
 
         public static string GetBooksByAgeRestriction(BookShopContext context, string command)
@@ -197,6 +197,29 @@ namespace BookShop
                 .Count();
 
             return bookCount;
+        }
+
+        public static string CountCopiesByAuthor(BookShopContext context)
+        {
+            var authorBookCopies = context.Authors
+                .Include(a => a.Books)
+                .AsNoTracking()
+                .Select(a => new
+                {
+                    FullName = $"{a.FirstName} {a.LastName}",
+                    TotalCopies = a.Books
+                        .Select(b => b.Copies)
+                        .Sum()
+                })
+                .OrderByDescending(autherCopies => autherCopies.TotalCopies)
+                .ToArray();
+
+            StringBuilder sb = new StringBuilder();
+
+            return sb.AppendJoin(Environment.NewLine, authorBookCopies
+                    .Select(autherBooks => $"{autherBooks.FullName} - {autherBooks.TotalCopies}"))
+                .ToString()
+                .Trim();
         }
     }
 }
