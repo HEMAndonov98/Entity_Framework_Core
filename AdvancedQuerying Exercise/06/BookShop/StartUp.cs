@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using BookShop.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,7 @@ namespace BookShop
         {
             using var db = new BookShopContext();
             //DbInitializer.ResetDatabase(db);
-            Console.WriteLine(GetBooksByCategory(db, Console.ReadLine()));
+            Console.WriteLine(GetBooksReleasedBefore(db, Console.ReadLine()));
         }
 
         public static string GetBooksByAgeRestriction(BookShopContext context, string command)
@@ -110,6 +111,39 @@ namespace BookShop
             //and from that query we would load all the book titles the query will be something like SELECT Title FROM Books WHERE BookId = Result
 
             return string.Join(Environment.NewLine, bookTitles).Trim();
+        }
+
+        public static string GetBooksReleasedBefore(BookShopContext context, string date)
+        {
+            try
+            {
+                var books = context.Books
+                    .AsNoTracking()
+                    .Where(b => b.ReleaseDate < DateTime.ParseExact(date, "dd-MM-yyyy", CultureInfo.InvariantCulture))
+                    .OrderByDescending(b => b.ReleaseDate)
+                    .Select(b => new
+                    {
+                        b.Title,
+                        b.EditionType,
+                        b.Price
+                    })
+                    .ToList();
+
+                StringBuilder sb = new StringBuilder();
+
+                foreach (var book in books)
+                {
+                    sb.AppendLine($"{book.Title} - {book.EditionType} - ${book.Price:F2}");
+                }
+
+                return sb.ToString()
+                    .Trim();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
         }
     }
 }
