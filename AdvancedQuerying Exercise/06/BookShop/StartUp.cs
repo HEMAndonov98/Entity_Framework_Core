@@ -1,8 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
-using BookShop.Models;
 using BookShop.Models.Enums;
-using Castle.Core.Internal;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookShop
@@ -15,8 +13,8 @@ namespace BookShop
         public static void Main()
         {
             using var db = new BookShopContext();
-            DbInitializer.ResetDatabase(db);
-            Console.WriteLine(GetBooksByAuthor(db, Console.ReadLine()));
+            //DbInitializer.ResetDatabase(db);
+            Console.WriteLine(CountBooks(db, int.Parse(Console.ReadLine())));
         }
 
         public static string GetBooksByAgeRestriction(BookShopContext context, string command)
@@ -187,6 +185,18 @@ namespace BookShop
                 .ToArray();
 
             return string.Join(Environment.NewLine, booksWithAuthors);
+        }
+
+        public static int CountBooks(BookShopContext context, int lengthCheck)
+        {
+
+            var bookCount = context.Books
+                .AsNoTracking()
+                .Where(b => b.Title.Length > lengthCheck)
+                .Select(b => b.BookId)
+                .Count();
+
+            return bookCount;
         }
     }
 }
