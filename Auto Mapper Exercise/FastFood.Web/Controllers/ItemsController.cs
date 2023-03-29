@@ -1,4 +1,7 @@
-﻿namespace FastFood.Web.Controllers
+﻿using FastFood.Models;
+using FastFood.Services.Data;
+
+namespace FastFood.Web.Controllers
 {
     using System;
     using System.Linq;
@@ -10,29 +13,32 @@
 
     public class ItemsController : Controller
     {
-        private readonly FastFoodContext _context;
-        private readonly IMapper _mapper;
+        private readonly IItemsService itemsService;
 
-        public ItemsController(FastFoodContext context, IMapper mapper)
+        public ItemsController(IItemsService service)
         {
-            _context = context;
-            _mapper = mapper;
+            this.itemsService = service;
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            throw new NotImplementedException();
+            var categories = await this.itemsService.CreateAsync();
+
+            return View(categories);
         }
 
         [HttpPost]
-        public IActionResult Create(CreateItemInputModel model)
+        public async Task<IActionResult> Create(CreateItemInputModel model)
         {
-            throw new NotImplementedException();
+            await this.itemsService.CreateAsync(model);
+            return RedirectToAction("All", "Items");
         }
 
-        public IActionResult All()
+        public async Task<IActionResult> All()
         {
-            throw new NotImplementedException();
+            IList<ItemsAllViewModels> items = await this.itemsService.AllAsync();
+
+            return View(items);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace FastFood.Web.Controllers
+﻿using FastFood.Services.Data;
+
+namespace FastFood.Web.Controllers
 {
     using System.Linq;
     using AutoMapper;
@@ -10,13 +12,10 @@
 
     public class PositionsController : Controller
     {
-        private readonly FastFoodContext _context;
-        private readonly IMapper _mapper;
-
-        public PositionsController(FastFoodContext context, IMapper mapper)
+        private readonly IPositionsService positionsService;
+        public PositionsController(IPositionsService positionsService)
         {
-            _context = context;
-            _mapper = mapper;
+            this.positionsService = positionsService;
         }
 
         public IActionResult Create()
@@ -25,29 +24,24 @@
         }
 
         [HttpPost]
-        public IActionResult Create(CreatePositionInputModel model)
+        public async Task<IActionResult> Create(CreatePositionInputModel model)
         {
             if (!ModelState.IsValid)
             {
                 return RedirectToAction("Error", "Home");
             }
 
-            var position = _mapper.Map<Position>(model);
-
-            _context.Positions.Add(position);
-
-            _context.SaveChanges();
+            await this.positionsService.Create(model);
 
             return RedirectToAction("All", "Positions");
         }
 
-        public IActionResult All()
+        public async Task<IActionResult> All()
         {
-            var positions = _context.Positions
-                .ProjectTo<PositionsAllViewModel>(_mapper.ConfigurationProvider)
-                .ToList();
+            var positions = await this.positionsService
+                .GetAll();
 
-            return View(positions);
+            return View(positions.ToList());
         }
     }
 }

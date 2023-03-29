@@ -1,4 +1,6 @@
-﻿namespace FastFood.Models
+﻿using Common;
+
+namespace FastFood.Models
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -8,7 +10,7 @@
         public int Id { get; set; }
 
         [Required]
-        [StringLength(30, MinimumLength = 3)]
+        [MaxLength(EntityValidations.PositionNameMaxLength)]
         public string Name { get; set; } = null!;
 
         public ICollection<Employee> Employees { get; set; } = new List<Employee>();

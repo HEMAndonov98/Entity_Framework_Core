@@ -1,4 +1,6 @@
 ﻿
+using Common;
+
 namespace FastFood.Data
 {
     using Microsoft.EntityFrameworkCore;
@@ -37,6 +39,13 @@ namespace FastFood.Data
 
             builder.Entity<Item>()
                 .HasAlternateKey(i => i.Name);
+            
+            //Items
+
+            builder.Entity<Item>()
+                .Property(i => i.Price)
+                .HasColumnType(
+                    $"DECIMAL({EntityValidations.ItemPriceDecimal}, {EntityValidations.ItemPriceDecimalDigits})");
         }
     }
 }

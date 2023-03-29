@@ -9,6 +9,7 @@
 
     public class Order
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -23,6 +24,7 @@
         [NotMapped]
         public decimal TotalPrice { get; set; }
 
+        [ForeignKey(nameof(Models.Employee))]
         public int EmployeeId { get; set; }
 
         [Required]
