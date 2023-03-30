@@ -1,5 +1,8 @@
+using System.Runtime.CompilerServices;
+using FastFood.Web.ViewModels.Categories;
 using FastFood.Web.ViewModels.Employees;
 using FastFood.Web.ViewModels.Items;
+using FastFood.Web.ViewModels.Orders;
 
 namespace FastFood.Services.Mapping
 {
@@ -33,16 +36,26 @@ namespace FastFood.Services.Mapping
             this.CreateMap<RegisterEmployeeInputModel, Employee>();
             
             //Items
-            
-            this.CreateMap<Category, CreateItemViewModel>()
-                .ForMember(dst => dst.CategoryId, opt => opt
-                    .MapFrom(src => src.Id));
+
+            this.CreateMap<Category, CreateItemViewModel>();
 
             this.CreateMap<CreateItemInputModel, Item>();
 
             this.CreateMap<Item, ItemsAllViewModels>()
                 .ForMember(dst => dst.Category, opt => opt
                     .MapFrom(src => src.Category.Name));
+            
+            //Category
+
+            this.CreateMap<CreateCategoryInputModel, Category>()
+                .ForMember(dst => dst.Name, opt => opt
+                    .MapFrom(src => src.CategoryName));
+
+            this.CreateMap<Category, CategoryAllViewModel>();
+            
+            //Orders
+            
+
         }
     }
 }

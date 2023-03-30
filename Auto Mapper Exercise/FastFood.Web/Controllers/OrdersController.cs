@@ -1,4 +1,6 @@
-﻿namespace FastFood.Web.Controllers
+﻿using FastFood.Services.Data;
+
+namespace FastFood.Web.Controllers
 {
     using System;
     using System.Linq;
@@ -9,22 +11,16 @@
 
     public class OrdersController : Controller
     {
-        private readonly FastFoodContext _context;
-        private readonly IMapper _mapper;
+        private readonly IOrderService orderService;
 
-        public OrdersController(FastFoodContext context, IMapper mapper)
+        public OrdersController(IOrderService service)
         {
-            _context = context;
-            _mapper = mapper;
+            this.orderService = service;
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var viewOrder = new CreateOrderViewModel
-            {
-                Items = _context.Items.Select(x => x.Id).ToList(),
-                Employees = _context.Employees.Select(x => x.Id).ToList(),
-            };
+            var viewOrder = await this.orderService.CreateAsync();
 
             return View(viewOrder);
         }

@@ -4,8 +4,15 @@
 
     public class CreateOrderViewModel
     {
-        public List<int> Items { get; set; } = null!;
 
-        public List<int> Employees { get; set; } = null!;
+        public CreateOrderViewModel()
+        {
+            this.EmployeesNames = new Dictionary<int, string>();
+            this.ItemsNames = new Dictionary<int, string>();
+        }
+        public IDictionary<int, string> ItemsNames { get; set; } = null!;
+
+        public IDictionary<int, string> EmployeesNames { get; set; } = null!;
+
     }
 }

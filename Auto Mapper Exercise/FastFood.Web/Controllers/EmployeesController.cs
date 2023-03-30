@@ -23,6 +23,11 @@ namespace FastFood.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterEmployeeInputModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            
             await this.employeeService.Register(model);
 
             return RedirectToAction("All", "Employees");

@@ -1,9 +1,11 @@
+using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 
 
 using FastFood.Data;
 using FastFood.Services.Data;
 using FastFood.Services.Mapping;
+using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,17 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddTransient<IPositionsService, PositionsService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddTransient<IItemsService, ItemsService>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
+
+//Culture Info configuration
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture(CultureInfo.InvariantCulture);
+    options.SupportedCultures = new[] { CultureInfo.InvariantCulture };
+    options.SupportedUICultures = new[] { CultureInfo.InvariantCulture };
+});
 
 var app = builder.Build();
 

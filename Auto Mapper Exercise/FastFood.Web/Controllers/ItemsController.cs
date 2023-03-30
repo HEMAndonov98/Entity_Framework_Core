@@ -1,13 +1,9 @@
-﻿using FastFood.Models;
+﻿using System.Globalization;
+using FastFood.Models;
 using FastFood.Services.Data;
 
 namespace FastFood.Web.Controllers
 {
-    using System;
-    using System.Linq;
-    using AutoMapper;
-    using AutoMapper.QueryableExtensions;
-    using Data;
     using Microsoft.AspNetCore.Mvc;
     using ViewModels.Items;
 
@@ -28,9 +24,21 @@ namespace FastFood.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateItemInputModel model)
+        public async Task<IActionResult> Create(string name, string price, int categoryId)
         {
-            await this.itemsService.CreateAsync(model);
+            CreateItemInputModel inputModel = new CreateItemInputModel()
+            {
+                Name = name,
+                Price = decimal.Parse(price, CultureInfo.InvariantCulture),
+                CategoryId = categoryId
+            };
+            
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            
+            await this.itemsService.CreateAsync(inputModel);
             return RedirectToAction("All", "Items");
         }
 
