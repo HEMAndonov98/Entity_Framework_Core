@@ -7,7 +7,7 @@ public static class EntityValidations
     public const int UsersLastNameMaxLength = 30;
     
     //Products
-    public const int ProductNameMaxLength = 30;
+    public const int ProductNameMaxLength = 250;
     public const int ProductPriceDecimal = 16;
     public const int ProductPriceDecimalAfterSeparator = 2;
     
