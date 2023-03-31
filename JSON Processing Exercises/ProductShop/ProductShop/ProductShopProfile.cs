@@ -29,6 +29,27 @@ namespace ProductShop
             this.CreateMap<Product, ExportProductsInRangeDto>()
                 .ForMember(dst => dst.SellerFullName, opt => opt
                     .MapFrom(src => $"{src.Seller.FirstName} {src.Seller.LastName}".Trim()));
+            
+            //User Sold Products
+            
+                    //I am leaving this for the future me. When you want to use automapper and you need to map an Entity to a Dto but this dto needs to have a collection of another entity mirroring the real entity what I need to specify in the configuration is 
+                    //1. How I want the outer entity to map to my outer Dto
+                    //2. Inside this dto how I want the collection to map to the collection Ei Collection of Product Entity to Collection of ProductDto
+                    //3. Inside this I will specify how I want a single Entity of type Product to map to a single type of ProductDto
+                    //4. Automapper will then know that I want to map a collection to another collection and how to map a singular element from the collection
+            CreateMap<Product, ExportSoldProductDto>()
+                .ForMember(dest => dest.BuyerFirstName, opt => opt.MapFrom(src => src.Buyer.FirstName))
+                .ForMember(dest => dest.BuyerLastName, opt => opt.MapFrom(src => src.Buyer.LastName));
+
+
+            CreateMap<User, ExportUsersSoldProductsDto>()
+                .ForMember(dest => dest.ProductsSold, opt => opt
+                    .MapFrom(src => src.ProductsSold));
+            
+            this.CreateMap<ICollection<Product>, List<ExportSoldProductDto>>();
+
+
+
         }
     }
 }

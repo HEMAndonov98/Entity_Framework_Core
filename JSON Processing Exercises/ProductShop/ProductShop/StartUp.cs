@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Runtime.CompilerServices;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Castle.Core.Internal;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +31,8 @@ namespace ProductShop
             // Console.WriteLine(ImportCategories(db, jsonImportCategories));
             // Console.WriteLine(ImportCategoryProducts(db, jsonImportCategoriesProducts));
 
-            Console.WriteLine(GetProductsInRange(db));
+            //Console.WriteLine(GetProductsInRange(db));
+            Console.WriteLine(GetSoldProducts(db));
         }
         //Import Data
 
@@ -161,7 +163,22 @@ namespace ProductShop
 
         public static string GetSoldProducts(ProductShopContext context)
         {
-            return string.Empty;
+            IMapper mapper = CreateMapper();
+
+            var userProductsDto = context.Users
+                .AsNoTracking()
+                .Include(u => u.ProductsSold)
+                .ThenInclude(ps => ps.Buyer)
+                .Where(u => u.ProductsSold.Any())
+                .OrderBy(u => u.LastName)
+                .ThenBy(u => u.FirstName)
+                .ProjectTo<ExportUsersSoldProductsDto>(mapper.ConfigurationProvider)
+                .ToList();
+            
+            
+            var json = JsonConvert.SerializeObject(userProductsDto, Formatting.Indented);
+            
+            return json;
         }
     }
 }
