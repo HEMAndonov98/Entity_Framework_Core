@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Castle.Core.Internal;
@@ -32,7 +33,8 @@ namespace ProductShop
             // Console.WriteLine(ImportCategoryProducts(db, jsonImportCategoriesProducts));
 
             //Console.WriteLine(GetProductsInRange(db));
-            Console.WriteLine(GetSoldProducts(db));
+            //Console.WriteLine(GetSoldProducts(db));
+            Console.WriteLine(GetCategoriesByProductsCount(db));
         }
         //Import Data
 
@@ -161,6 +163,7 @@ namespace ProductShop
             return jsonProducts;
         }
 
+        [SuppressMessage("ReSharper.DPA", "DPA0007: Large number of DB records", MessageId = "count: 200")]
         public static string GetSoldProducts(ProductShopContext context)
         {
             IMapper mapper = CreateMapper();
@@ -169,7 +172,7 @@ namespace ProductShop
                 .AsNoTracking()
                 .Include(u => u.ProductsSold)
                 .ThenInclude(ps => ps.Buyer)
-                .Where(u => u.ProductsSold.Any())
+                .Where(u => u.ProductsSold.Any(p => p.Buyer != null))
                 .OrderBy(u => u.LastName)
                 .ThenBy(u => u.FirstName)
                 .ProjectTo<ExportUsersSoldProductsDto>(mapper.ConfigurationProvider)
@@ -179,6 +182,22 @@ namespace ProductShop
             var json = JsonConvert.SerializeObject(userProductsDto, Formatting.Indented);
             
             return json;
+        }
+
+        public static string GetCategoriesByProductsCount(ProductShopContext context)
+        {
+            IMapper mapper = CreateMapper();
+
+            var categoryDtos = context.Categories
+                .AsNoTracking()
+                .Include(c => c.CategoriesProducts)
+                .ThenInclude(cp => cp.Product)
+                .ProjectTo<ExportCategoryDto>(mapper.ConfigurationProvider)
+                .ToList()
+                .OrderByDescending(dto => dto.ProductsCount);
+
+            var json = JsonConvert.SerializeObject(categoryDtos, Formatting.Indented);
+         return   json;
         }
     }
 }

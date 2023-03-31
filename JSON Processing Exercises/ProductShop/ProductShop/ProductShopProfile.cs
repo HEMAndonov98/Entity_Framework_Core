@@ -49,6 +49,19 @@ namespace ProductShop
             this.CreateMap<ICollection<Product>, List<ExportSoldProductDto>>();
 
 
+            //Category Export Dto
+
+            this.CreateMap<Category, ExportCategoryDto>()
+                .ForMember(dst => dst.CategoryName, opt => opt
+                    .MapFrom(src => src.Name))
+                .ForMember(dst => dst.ProductsCount, opt => opt
+                    .MapFrom(src => src.CategoriesProducts.Count))
+                .ForMember(dst => dst.AveragePrice, opt => opt
+                    .MapFrom(src => src.CategoriesProducts
+                        .Select(cp => cp.Product.Price).Average().ToString("F2")))
+                .ForMember(dst => dst.TotalRevenue, opt => opt
+                    .MapFrom(src => src.CategoriesProducts
+                        .Select(cp => cp.Product.Price).Sum().ToString("F2")));
 
         }
     }
