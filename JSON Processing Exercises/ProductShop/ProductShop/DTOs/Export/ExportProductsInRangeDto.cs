@@ -1,15 +1,15 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace ProductShop.DTOs.Export;
 
 public class ExportProductsInRangeDto
 {
-    [JsonPropertyName("name")]
+    [JsonProperty("name")]
     public string Name { get; set; }
 
-    [JsonPropertyName("price")]
+    [JsonProperty("price")]
     public decimal Price { get; set; }
 
-    [JsonPropertyName("seller")]
+    [JsonProperty("seller")]
     public string SellerFullName { get; set; }
 }

@@ -30,7 +30,7 @@ namespace ProductShop
             // Console.WriteLine(ImportCategories(db, jsonImportCategories));
             // Console.WriteLine(ImportCategoryProducts(db, jsonImportCategoriesProducts));
 
-            //Console.WriteLine(GetProductsInRange(db));
+            Console.WriteLine(GetProductsInRange(db));
         }
         //Import Data
 
@@ -157,6 +157,11 @@ namespace ProductShop
             var jsonProducts = JsonConvert.SerializeObject(products, Formatting.Indented);
             
             return jsonProducts;
+        }
+
+        public static string GetSoldProducts(ProductShopContext context)
+        {
+            return string.Empty;
         }
     }
 }
