@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Castle.Core.Internal;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProductShop.Data;
+using ProductShop.DTOs.Export;
 using ProductShop.DTOs.Import;
 using ProductShop.Models;
 
@@ -13,19 +16,21 @@ namespace ProductShop
         public static void Main()
         {
             using var db = new ProductShopContext();
-            InitialiseDb(db);
+            //InitialiseDb(db);
 
-            string jsonImportUsers = File.ReadAllText(@"../../../Datasets/users.json");
-            string jsonImportProducts = File.ReadAllText(@"../../../Datasets/products.json");
-            string jsonImportCategories = File.ReadAllText(@"../../../Datasets/categories.json");
-            string jsonImportCategoriesProducts = File.ReadAllText(@"../../../Datasets/categories-products.json");
+            // string jsonImportUsers = File.ReadAllText(@"../../../Datasets/users.json");
+            // string jsonImportProducts = File.ReadAllText(@"../../../Datasets/products.json");
+            // string jsonImportCategories = File.ReadAllText(@"../../../Datasets/categories.json");
+            // string jsonImportCategoriesProducts = File.ReadAllText(@"../../../Datasets/categories-products.json");
 
 
 
-            Console.WriteLine(ImportUsers(db, jsonImportUsers));
-            Console.WriteLine(ImportProducts(db, jsonImportProducts));
-            Console.WriteLine(ImportCategories(db, jsonImportCategories));
-            Console.WriteLine(ImportCategoryProducts(db, jsonImportCategoriesProducts));
+            // Console.WriteLine(ImportUsers(db, jsonImportUsers));
+            // Console.WriteLine(ImportProducts(db, jsonImportProducts));
+            // Console.WriteLine(ImportCategories(db, jsonImportCategories));
+            // Console.WriteLine(ImportCategoryProducts(db, jsonImportCategoriesProducts));
+
+            //Console.WriteLine(GetProductsInRange(db));
         }
         //Import Data
 
@@ -136,5 +141,22 @@ namespace ProductShop
         }
         
         //Export Data
+
+        public static string GetProductsInRange(ProductShopContext context)
+        {
+            IMapper mapper = CreateMapper();
+
+            var products = context.Products
+                .AsNoTracking()
+                .Include(p => p.Seller)
+                .Where(p => p.Price >= 500 && p.Price <= 1000)
+                .OrderBy(p => p.Price)
+                .ProjectTo<ExportProductsInRangeDto>(mapper.ConfigurationProvider)
+                .ToList();
+
+            var jsonProducts = JsonConvert.SerializeObject(products, Formatting.Indented);
+            
+            return jsonProducts;
+        }
     }
 }

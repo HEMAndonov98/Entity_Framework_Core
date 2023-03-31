@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ProductShop.DTOs.Export;
 using ProductShop.DTOs.Import;
 using ProductShop.Models;
 
@@ -8,6 +9,8 @@ namespace ProductShop
     {
         public ProductShopProfile()
         {
+            //Import
+            
             //User Profile
             this.CreateMap<ImportUserDto, User>();
             
@@ -19,6 +22,13 @@ namespace ProductShop
             
             //CategoryProduct Profile
             this.CreateMap<ImportCategoryProductDto, CategoryProduct>();
+            
+            //Export
+            
+            //ProductsInRange
+            this.CreateMap<Product, ExportProductsInRangeDto>()
+                .ForMember(dst => dst.SellerFullName, opt => opt
+                    .MapFrom(src => $"{src.Seller.FirstName} {src.Seller.LastName}".Trim()));
         }
     }
 }
