@@ -34,7 +34,8 @@ namespace ProductShop
 
             //Console.WriteLine(GetProductsInRange(db));
             //Console.WriteLine(GetSoldProducts(db));
-            Console.WriteLine(GetCategoriesByProductsCount(db));
+            //Console.WriteLine(GetCategoriesByProductsCount(db));
+            Console.WriteLine(GetUsersWithProducts(db));
         }
         //Import Data
 
@@ -198,6 +199,28 @@ namespace ProductShop
 
             var json = JsonConvert.SerializeObject(categoryDtos, Formatting.Indented);
          return   json;
+        }
+
+        public static string GetUsersWithProducts(ProductShopContext context)
+        {
+            var mapper = CreateMapper().ConfigurationProvider;
+            var usersDtos = context.Users
+                .AsNoTracking()
+                .Include(u => u.ProductsSold)
+                .ThenInclude(ps => ps.Buyer)
+                .Where(u => u.ProductsSold.Any(p => p.Buyer != null))
+                .OrderByDescending(u => u.ProductsSold.Count)
+                .ProjectTo<ExportUsersDto>(mapper)
+                .ToList();
+
+            // var test = context.Users
+            //     .AsNoTracking()
+            //     .Include(u => u.ProductsSold)
+            //     .Where(u => u.ProductsSold.Any())
+            //     .ProjectTo<ExportUsersDto>(mapper)
+            //     .ToList();
+            
+            return string.Empty;
         }
     }
 }
