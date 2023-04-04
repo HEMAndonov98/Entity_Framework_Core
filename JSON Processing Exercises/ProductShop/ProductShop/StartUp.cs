@@ -213,7 +213,7 @@ namespace ProductShop
                 .Include(u => u.ProductsSold)
                 .ThenInclude(ps => ps.Buyer)
                 .Where(u => u.ProductsSold.Any(p => p.Buyer != null))
-                .OrderByDescending(u => u.ProductsSold.Count)
+                .OrderByDescending(u => u.ProductsSold.Count(p => p.Buyer != null))
                 .Select(u => new
                 {
                     firstName = u.FirstName,
@@ -221,25 +221,34 @@ namespace ProductShop
                     age = u.Age,
                     soldProducts = new
                         {
-                            count = u.ProductsSold.Count(),
+                            count = u.ProductsSold.Count(p => p.Buyer != null),
                             products = u.ProductsSold
+                                .Where(p => p.Buyer != null)
                                 .Select(ps => new
                                 {
                                     name = ps.Name,
                                     price = ps.Price
                                 })
+                                .OrderByDescending(p => u.ProductsSold
+                                    .Count(p => p.Buyer != null))
                                 .ToList()
                         }
                     })
                     .AsSplitQuery()
                 .ToList();
 
+            var usersWrapper = new
+            {
+                usersCount = usersDtos.Count,
+                users = usersDtos
+            };
+
             
             var serializerSettings = new JsonSerializerSettings() 
             {
                 NullValueHandling = NullValueHandling.Ignore
             };
-            string json = JsonConvert.SerializeObject(usersDtos, Formatting.Indented, serializerSettings);
+            string json = JsonConvert.SerializeObject(usersWrapper, Formatting.Indented, serializerSettings);
             return json;
         }
     }
