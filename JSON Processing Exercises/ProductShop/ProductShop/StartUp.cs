@@ -1,32 +1,35 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Castle.Core.Internal;
 using Microsoft.EntityFrameworkCore;
+
+using Castle.Core.Internal;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ProductShop.Data;
-using ProductShop.DTOs.Export;
-using ProductShop.DTOs.Import;
-using ProductShop.Models;
+
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace ProductShop
 {
+        using Data;
+        using Models;
+        using DTOs.Export;
+        using DTOs.Import;
     public class StartUp
     {
+        
         public static void Main()
         {
             using var db = new ProductShopContext();
-            //InitialiseDb(db);
-
+            // InitialiseDb(db);
+            //
             // string jsonImportUsers = File.ReadAllText(@"../../../Datasets/users.json");
             // string jsonImportProducts = File.ReadAllText(@"../../../Datasets/products.json");
             // string jsonImportCategories = File.ReadAllText(@"../../../Datasets/categories.json");
             // string jsonImportCategoriesProducts = File.ReadAllText(@"../../../Datasets/categories-products.json");
-
-
-
+            //
+            //
+            //
             // Console.WriteLine(ImportUsers(db, jsonImportUsers));
             // Console.WriteLine(ImportProducts(db, jsonImportProducts));
             // Console.WriteLine(ImportCategories(db, jsonImportCategories));
@@ -203,24 +206,41 @@ namespace ProductShop
 
         public static string GetUsersWithProducts(ProductShopContext context)
         {
-            var mapper = CreateMapper().ConfigurationProvider;
+            //I couldn't figure it out how to do this using automapper, I would love to revisit this some day or have someone explain it better to me
+            
             var usersDtos = context.Users
                 .AsNoTracking()
                 .Include(u => u.ProductsSold)
                 .ThenInclude(ps => ps.Buyer)
                 .Where(u => u.ProductsSold.Any(p => p.Buyer != null))
                 .OrderByDescending(u => u.ProductsSold.Count)
-                .ProjectTo<ExportUsersDto>(mapper)
+                .Select(u => new
+                {
+                    firstName = u.FirstName,
+                    lastName = u.LastName,
+                    age = u.Age,
+                    soldProducts = new
+                        {
+                            count = u.ProductsSold.Count(),
+                            products = u.ProductsSold
+                                .Select(ps => new
+                                {
+                                    name = ps.Name,
+                                    price = ps.Price
+                                })
+                                .ToList()
+                        }
+                    })
+                    .AsSplitQuery()
                 .ToList();
 
-            // var test = context.Users
-            //     .AsNoTracking()
-            //     .Include(u => u.ProductsSold)
-            //     .Where(u => u.ProductsSold.Any())
-            //     .ProjectTo<ExportUsersDto>(mapper)
-            //     .ToList();
             
-            return string.Empty;
+            var serializerSettings = new JsonSerializerSettings() 
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+            string json = JsonConvert.SerializeObject(usersDtos, Formatting.Indented, serializerSettings);
+            return json;
         }
     }
 }

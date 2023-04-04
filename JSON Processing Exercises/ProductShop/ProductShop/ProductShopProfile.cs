@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.Data.SqlClient;
 using ProductShop.DTOs.Export;
 using ProductShop.DTOs.Import;
 using ProductShop.Models;
@@ -29,7 +28,7 @@ namespace ProductShop
             //ProductsInRange
             this.CreateMap<Product, ExportProductsInRangeDto>()
                 .ForMember(dst => dst.SellerFullName, opt => opt
-                    .MapFrom(src => $"{src.Seller.FirstName} {src.Seller.LastName}".Trim()));
+                    .MapFrom(src => $"{src.Seller.FirstName} {src.Seller.LastName}"));
             
             //User Sold Products
             
@@ -63,34 +62,6 @@ namespace ProductShop
                 .ForMember(dst => dst.TotalRevenue, opt => opt
                     .MapFrom(src => src.CategoriesProducts
                         .Select(cp => cp.Product.Price).Sum().ToString("F2")));
-            
-            //Export Users with Products
-
-            this.CreateMap<Product, ExportProductDto>()
-                .ForMember(dst => dst.Name, opt => opt
-                    .MapFrom(src => src.Name))
-                .ForMember(dst => dst.Price, opt => opt
-                    .MapFrom(src => src.Price));
-
-            this.CreateMap<Product, ICollection<ExportProductDto>>();
-
-
-            this.CreateMap<User, ExportUsersDto>()
-                .ForMember(dst => dst.FirstName, opt => opt
-                    .MapFrom(src => src.FirstName))
-                .ForMember(dst => dst.LastName, opt => opt
-                    .MapFrom(src => src.LastName))
-                .ForMember(dst => dst.Products, opt => opt
-                    .MapFrom(src => src.ProductsSold));
-
-            this.CreateMap<User, ICollection<ExportUsersDto>>();
-
-            this.CreateMap<User, ExportUsersWithProductsDto>()
-                .ForMember(dst => dst.Users, opt => opt
-                    .MapFrom(src => src));
-
-            this.CreateMap<ICollection<User>, ICollection<ExportUsersDto>>();
-            this.CreateMap<ICollection<ExportUsersDto>, ExportUsersWithProductsDto>();
         }
     }
 }
