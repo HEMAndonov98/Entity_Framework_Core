@@ -118,6 +118,9 @@ namespace CarDealer
             return $"Successfully imported {validCars.Count}.";
         }
 
-        
+        public static string ImportCustomers(CarDealerContext context, string inputJson)
+        {
+            return string.Empty;
+        }
     }
 }
