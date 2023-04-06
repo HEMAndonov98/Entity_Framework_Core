@@ -15,6 +15,13 @@ namespace CarDealer
                     .MapFrom(src => src.SupplierName))
                 .ForMember(dst => dst.IsImporter, opt => opt
                     .MapFrom(src => src.IsImporter));
+            
+            //Part
+            this.CreateMap<ImportPartDto, Part>();
+            
+            //Car
+            this.CreateMap<ImportCarDto, Car>();
+            
         }
     }
 }
