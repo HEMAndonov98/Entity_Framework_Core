@@ -11,18 +11,20 @@ namespace CarDealer
         public static void Main()
         {
             using CarDealerContext db = new CarDealerContext();
-            ResetDatabase(db);
+            //ResetDatabase(db);
             
             string importSupplierJson = File.ReadAllText("../../../Datasets/suppliers.json");
             string importPartJson = File.ReadAllText("../../../Datasets/parts.json");
             string importCarJson = File.ReadAllText("../../../Datasets/cars.json");
             string importCustomerJson = File.ReadAllText("../../../Datasets/customers.json");
+            string importSaleJson = File.ReadAllText("../../../Datasets/sales.json");
             
             
             Console.WriteLine(ImportSuppliers(db, importSupplierJson));
             Console.WriteLine(ImportParts(db, importPartJson));
             Console.WriteLine(ImportCars(db, importCarJson));
             Console.WriteLine(ImportCustomers(db, importCustomerJson));
+            Console.WriteLine(ImportSales(db, importSaleJson));
         }
 
         public static void ResetDatabase(CarDealerContext context)
@@ -133,7 +135,25 @@ namespace CarDealer
             
             return $"Successfully imported {newCustomers.Count}."; ;
         }
-        
-        
+
+        public static string ImportSales(CarDealerContext context, string inputJson)
+        {
+            var mapper = CreateMapper();
+            List<ImportSaleDto> saleDtos = JsonConvert.DeserializeObject<List<ImportSaleDto>>(inputJson);
+
+            List<Sale> validSales = new List<Sale>();
+            foreach (ImportSaleDto saleDto in saleDtos)
+            {
+                if (context.Cars.Find(saleDto.CarId) == null ||
+                    context.Customers.Find(saleDto.CustomerId) == null) continue;
+
+                Sale newSale = mapper.Map<Sale>(saleDto);
+                validSales.Add(newSale);
+            }
+            
+            context.Sales.AddRange(validSales);
+            context.SaveChanges();
+            return $"Successfully imported {validSales.Count}.";
+        }
     }
 }
