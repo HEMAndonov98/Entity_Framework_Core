@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics.CodeAnalysis;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CarDealer.Data;
 using CarDealer.DTOs.Export;
@@ -32,7 +33,8 @@ namespace CarDealer
 
             //Console.WriteLine(GetOrderedCustomers(db));
             //Console.WriteLine(GetCarsFromMakeToyota(db));
-            Console.WriteLine(GetLocalSuppliers(db));
+            //Console.WriteLine(GetLocalSuppliers(db));
+            Console.WriteLine(GetCarsWithTheirListOfParts(db));
         }
 
         public static void ResetDatabase(CarDealerContext context)
@@ -212,6 +214,39 @@ namespace CarDealer
 
             var suppliersJson = JsonConvert.SerializeObject(localSuppliers, Formatting.Indented);
             return suppliersJson;
+        }
+
+        [SuppressMessage("ReSharper.DPA", "DPA0007: Large number of DB records", MessageId = "count: 2110")]
+        public static string GetCarsWithTheirListOfParts(CarDealerContext context)
+        {
+            //It is possible to Use a dto to do this but it will require me to put [JsonIgnore] on the dto 
+            //and make my other methods ignore this attribute so for ease of code I just use an anonymous object for this method
+
+            var cars = context.Cars
+                .Include(c => c.PartsCars)
+                .ThenInclude(pc => pc.Part)
+                .AsNoTracking()
+                .Select(c => new
+                {
+                    car = new
+                    {
+                         c.Make,
+                         c.Model,
+                         c.TravelledDistance
+                    },
+                    parts = c.PartsCars
+                        .Select(pc => new
+                        {
+                            pc.Part.Name,
+                            Price = pc.Part.Price.ToString("F2")
+                        })
+                        .ToArray()
+                });
+
+
+            var carsJson = JsonConvert.SerializeObject(cars, Formatting.Indented);
+
+            return carsJson;
         }
     }
 }
