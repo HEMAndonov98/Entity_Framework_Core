@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using CarDealer.Data;
+using CarDealer.DTOs.Export;
 using CarDealer.DTOs.Import;
 using CarDealer.Models;
 using Newtonsoft.Json;
@@ -13,18 +15,20 @@ namespace CarDealer
             using CarDealerContext db = new CarDealerContext();
             //ResetDatabase(db);
             
-            string importSupplierJson = File.ReadAllText("../../../Datasets/suppliers.json");
-            string importPartJson = File.ReadAllText("../../../Datasets/parts.json");
-            string importCarJson = File.ReadAllText("../../../Datasets/cars.json");
-            string importCustomerJson = File.ReadAllText("../../../Datasets/customers.json");
-            string importSaleJson = File.ReadAllText("../../../Datasets/sales.json");
-            
-            
-            Console.WriteLine(ImportSuppliers(db, importSupplierJson));
-            Console.WriteLine(ImportParts(db, importPartJson));
-            Console.WriteLine(ImportCars(db, importCarJson));
-            Console.WriteLine(ImportCustomers(db, importCustomerJson));
-            Console.WriteLine(ImportSales(db, importSaleJson));
+            // string importSupplierJson = File.ReadAllText("../../../Datasets/suppliers.json");
+            // string importPartJson = File.ReadAllText("../../../Datasets/parts.json");
+            // string importCarJson = File.ReadAllText("../../../Datasets/cars.json");
+            // string importCustomerJson = File.ReadAllText("../../../Datasets/customers.json");
+            // string importSaleJson = File.ReadAllText("../../../Datasets/sales.json");
+            //
+            //
+            // Console.WriteLine(ImportSuppliers(db, importSupplierJson));
+            // Console.WriteLine(ImportParts(db, importPartJson));
+            // Console.WriteLine(ImportCars(db, importCarJson));
+            // Console.WriteLine(ImportCustomers(db, importCustomerJson));
+            // Console.WriteLine(ImportSales(db, importSaleJson));
+
+            Console.WriteLine(GetOrderedCustomers(db));
         }
 
         public static void ResetDatabase(CarDealerContext context)
@@ -55,6 +59,8 @@ namespace CarDealer
 
             return true;
         }
+        
+        //Import    
 
         public static string ImportSuppliers(CarDealerContext context, string inputJson)
         {
@@ -154,6 +160,21 @@ namespace CarDealer
             context.Sales.AddRange(validSales);
             context.SaveChanges();
             return $"Successfully imported {validSales.Count}.";
+        }
+        
+        //Export
+
+        public static string GetOrderedCustomers(CarDealerContext context)
+        {
+            var config = CreateMapper().ConfigurationProvider;
+            var customers = context.Customers
+                .OrderBy(c => c.BirthDate)
+                .ThenByDescending(c => c.IsYoungDriver)
+                .ProjectTo<ExportCustomerDto>(config)
+                .ToList();
+
+            var customersJson = JsonConvert.SerializeObject(customers, Formatting.Indented);
+            return customersJson;
         }
     }
 }
