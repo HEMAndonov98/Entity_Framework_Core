@@ -14,8 +14,7 @@ namespace CarDealer.Models
 
         [ForeignKey(nameof(Car))]
         public int CarId { get; set; }
-        [NotMapped]
-        public Car Car { get; set; } = null!;    
+        public Car Car { get; set; } = null!;
 
         [ForeignKey(nameof(Customer))]
         public int CustomerId { get; set; }

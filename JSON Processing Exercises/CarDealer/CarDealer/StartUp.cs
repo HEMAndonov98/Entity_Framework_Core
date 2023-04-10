@@ -16,25 +16,26 @@ namespace CarDealer
         public static void Main()
         {
             using CarDealerContext db = new CarDealerContext();
-            //ResetDatabase(db);
-            
-            // string importSupplierJson = File.ReadAllText("../../../Datasets/suppliers.json");
-            // string importPartJson = File.ReadAllText("../../../Datasets/parts.json");
-            // string importCarJson = File.ReadAllText("../../../Datasets/cars.json");
-            // string importCustomerJson = File.ReadAllText("../../../Datasets/customers.json");
-            // string importSaleJson = File.ReadAllText("../../../Datasets/sales.json");
+            // ResetDatabase(db);
+            //
+            //  string importSupplierJson = File.ReadAllText("../../../Datasets/suppliers.json");
+            //  string importPartJson = File.ReadAllText("../../../Datasets/parts.json");
+            //  string importCarJson = File.ReadAllText("../../../Datasets/cars.json");
+            //  string importCustomerJson = File.ReadAllText("../../../Datasets/customers.json");
+            //  string importSaleJson = File.ReadAllText("../../../Datasets/sales.json");
             //
             //
-            // Console.WriteLine(ImportSuppliers(db, importSupplierJson));
-            // Console.WriteLine(ImportParts(db, importPartJson));
-            // Console.WriteLine(ImportCars(db, importCarJson));
-            // Console.WriteLine(ImportCustomers(db, importCustomerJson));
-            // Console.WriteLine(ImportSales(db, importSaleJson));
-
-            //Console.WriteLine(GetOrderedCustomers(db));
-            //Console.WriteLine(GetCarsFromMakeToyota(db));
-            //Console.WriteLine(GetLocalSuppliers(db));
-            Console.WriteLine(GetCarsWithTheirListOfParts(db));
+            //  Console.WriteLine(ImportSuppliers(db, importSupplierJson));
+            //  Console.WriteLine(ImportParts(db, importPartJson));
+            //  Console.WriteLine(ImportCars(db, importCarJson));
+            //  Console.WriteLine(ImportCustomers(db, importCustomerJson));
+            //  Console.WriteLine(ImportSales(db, importSaleJson));
+            //
+            // Console.WriteLine(GetOrderedCustomers(db));
+            // Console.WriteLine(GetCarsFromMakeToyota(db));
+            // Console.WriteLine(GetLocalSuppliers(db));
+            // Console.WriteLine(GetCarsWithTheirListOfParts(db));
+            Console.WriteLine(GetTotalSalesByCustomer(db));
         }
 
         public static void ResetDatabase(CarDealerContext context)
@@ -247,6 +248,33 @@ namespace CarDealer
             var carsJson = JsonConvert.SerializeObject(cars, Formatting.Indented);
 
             return carsJson;
+        }
+
+        public static string GetTotalSalesByCustomer(CarDealerContext context)
+        {
+            var config = CreateMapper().ConfigurationProvider;
+
+            var sales = context.Customers
+                .AsNoTracking()
+                .Include(c => c.Sales)
+                .ThenInclude(s => s.Car)
+                .ThenInclude(c => c.PartsCars)
+                .ThenInclude(pc => pc.Part)
+                .Where(c => c.Sales.Count >= 1)
+                .Select(actual => new
+                {
+                    fullName = actual.Name,
+                    boughtCars = actual.Sales.Count,
+                    spentMoney = actual.Sales.SelectMany(s => s.Car.PartsCars)
+                        .Select(s => s.Part.Price).Sum()
+                })
+                .ToList()
+                .OrderByDescending(dto => dto.spentMoney)
+                .ThenByDescending(dto => dto.boughtCars)
+                .ToArray();
+
+            var json = JsonConvert.SerializeObject(sales, Formatting.Indented);
+            return json;
         }
     }
 }

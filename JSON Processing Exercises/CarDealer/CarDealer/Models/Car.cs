@@ -19,7 +19,7 @@ namespace CarDealer.Models
 
         public int TravelledDistance { get; set; }
 
-        [ForeignKey(nameof(Car))]
+        [InverseProperty(nameof(Car))]
         public ICollection<Sale> Sales { get; set; } = new List<Sale>();    
 
         [InverseProperty(nameof(Car))]
