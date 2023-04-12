@@ -1,7 +1,7 @@
 # Entity-Framework-Core
  Here i will put all the exercises from the EF Core course from SoftUni
 
- All the solutions can be tested here -> (Judge)[https://judge.softuni.org/Contests#!/List/ByCategory/68/CSharp-Databases-Advanced-Exercises]
+ All the solutions can be tested here -> [Judge](https://judge.softuni.org/Contests#!/List/ByCategory/68/CSharp-Databases-Advanced-Exercises)
 
  1. [ADO.Net Exercise](https://github.com/HEMAndonov98/Entity_Framework_Core/tree/main/ADODOTNETExercises)
  2. [ORM Fundamentals Exercise](https://github.com/HEMAndonov98/Entity_Framework_Core/tree/main/ORM%20Fundamental%20Exercise)
