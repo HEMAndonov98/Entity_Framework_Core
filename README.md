@@ -1,5 +1,7 @@
 # Entity-Framework-Core
  Here i will put all the exercises from the EF Core course from SoftUni
+## Progress 
+![][def]
 
  All the solutions can be tested here -> [Judge](https://judge.softuni.org/Contests#!/List/ByCategory/68/CSharp-Databases-Advanced-Exercises)
 
@@ -11,3 +13,6 @@
  6. [Advanced Querying Exercise](https://github.com/HEMAndonov98/Entity_Framework_Core/tree/main/AdvancedQuerying%20Exercise)
  7. [Auto-Mapper Exercise](https://github.com/HEMAndonov98/Entity_Framework_Core/tree/main/Auto%20Mapper%20Exercise)
  8. [Json Processing Exercise](https://github.com/HEMAndonov98/Entity_Framework_Core/tree/main/JSON%20Processing%20Exercises)
+
+
+[def]: https://geps.dev/progress/80
