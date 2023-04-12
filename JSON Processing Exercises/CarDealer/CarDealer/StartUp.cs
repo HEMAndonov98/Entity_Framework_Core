@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CarDealer.Data;
@@ -35,7 +36,8 @@ namespace CarDealer
             // Console.WriteLine(GetCarsFromMakeToyota(db));
             // Console.WriteLine(GetLocalSuppliers(db));
             // Console.WriteLine(GetCarsWithTheirListOfParts(db));
-            Console.WriteLine(GetTotalSalesByCustomer(db));
+            //Console.WriteLine(GetTotalSalesByCustomer(db));
+            Console.WriteLine(GetSalesWithAppliedDiscount(db));
         }
 
         public static void ResetDatabase(CarDealerContext context)
@@ -275,6 +277,21 @@ namespace CarDealer
 
             var json = JsonConvert.SerializeObject(sales, Formatting.Indented);
             return json;
+        }
+
+        public static string GetSalesWithAppliedDiscount(CarDealerContext context)
+        {
+            var config = CreateMapper().ConfigurationProvider;
+
+            var sales = context.Sales
+                .AsNoTracking()
+                .Take(10)
+                .ProjectTo<ExportSaleDto>(config)
+                .ToArray();
+
+            var salesJson = JsonConvert.SerializeObject(sales, Formatting.Indented);
+            
+            return salesJson;
         }
     }
 }

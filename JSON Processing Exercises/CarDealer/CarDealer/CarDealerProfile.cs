@@ -35,6 +35,16 @@ namespace CarDealer
             this.CreateMap<Customer, ExportCustomerDto>();
             //Sale
             this.CreateMap<ImportSaleDto, Sale>();
+            this.CreateMap<Sale, ExportSaleDto>()
+                .ForMember(dst => dst.CustomerName, opt => opt
+                    .MapFrom(src => src.Customer.Name))
+                .ForMember(dst => dst.Price, opt => opt
+                    .MapFrom(src => src.Car.PartsCars
+                        .Select(pc => pc.Part.Price)
+                        .Sum()
+                        .ToString()
+                    )
+                );
         }
     }
 }
