@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ProductShop.Common;
 
 namespace ProductShop.Models
 {
@@ -16,6 +17,7 @@ namespace ProductShop.Models
         public int Id { get; set; }
 
         [Required]
+        [MaxLength(EntityValidations.CategoryNameMaxLength)]
         public string Name { get; set; } = null!;
 
         [InverseProperty(nameof(Category))]
