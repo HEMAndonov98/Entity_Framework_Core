@@ -11,7 +11,7 @@ public static class EntityValidations
     
     //Product
 
-    public const int ProductNameMaxLength = 120;
+    public const int ProductNameMaxLength = 200;
 
     public const string ProductPrice = "DEC(16, 2)";
     
