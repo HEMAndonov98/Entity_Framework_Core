@@ -1,12 +1,10 @@
-using Newtonsoft.Json;
-
 namespace CarDealer.DTOs.Export;
 
 public class ExportCustomerDto
 {
     public string Name { get; set; } = null!;
 
-    public DateTime BirthDate { get; set; }
+    public string BirthDate { get; set; } = null!;
 
     public bool IsYoungDriver { get; set; }
 }

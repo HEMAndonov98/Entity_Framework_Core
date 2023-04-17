@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CarDealer.Data;
@@ -19,25 +18,26 @@ namespace CarDealer
             using CarDealerContext db = new CarDealerContext();
             // ResetDatabase(db);
             //
-            //  string importSupplierJson = File.ReadAllText("../../../Datasets/suppliers.json");
-            //  string importPartJson = File.ReadAllText("../../../Datasets/parts.json");
-            //  string importCarJson = File.ReadAllText("../../../Datasets/cars.json");
-            //  string importCustomerJson = File.ReadAllText("../../../Datasets/customers.json");
-            //  string importSaleJson = File.ReadAllText("../../../Datasets/sales.json");
+            // string importSupplierJson = File.ReadAllText("../../../Datasets/suppliers.json");
+            // string importPartJson = File.ReadAllText("../../../Datasets/parts.json");
+            // string importCarJson = File.ReadAllText("../../../Datasets/cars.json");
+            // string importCustomerJson = File.ReadAllText("../../../Datasets/customers.json");
+            // string importSaleJson = File.ReadAllText("../../../Datasets/sales.json");
             //
             //
-            //  Console.WriteLine(ImportSuppliers(db, importSupplierJson));
-            //  Console.WriteLine(ImportParts(db, importPartJson));
-            //  Console.WriteLine(ImportCars(db, importCarJson));
-            //  Console.WriteLine(ImportCustomers(db, importCustomerJson));
-            //  Console.WriteLine(ImportSales(db, importSaleJson));
-            //
-            // Console.WriteLine(GetOrderedCustomers(db));
-            // Console.WriteLine(GetCarsFromMakeToyota(db));
+            // Console.WriteLine(ImportSuppliers(db, importSupplierJson));
+            // Console.WriteLine(ImportParts(db, importPartJson));
+            // Console.WriteLine(ImportCars(db, importCarJson));
+            // Console.WriteLine(ImportCustomers(db, importCustomerJson));
+            // Console.WriteLine(ImportSales(db, importSaleJson));
+
+            
+            //Console.WriteLine(GetOrderedCustomers(db));
+             //Console.WriteLine(GetCarsFromMakeToyota(db));
             // Console.WriteLine(GetLocalSuppliers(db));
-            // Console.WriteLine(GetCarsWithTheirListOfParts(db));
-            //Console.WriteLine(GetTotalSalesByCustomer(db));
-            Console.WriteLine(GetSalesWithAppliedDiscount(db));
+            Console.WriteLine(GetCarsWithTheirListOfParts(db));
+             //Console.WriteLine(GetTotalSalesByCustomer(db));
+            // Console.WriteLine(GetSalesWithAppliedDiscount(db));
         }
 
         public static void ResetDatabase(CarDealerContext context)
@@ -148,7 +148,7 @@ namespace CarDealer
             context.Customers.AddRange(newCustomers);
             context.SaveChanges();
             
-            return $"Successfully imported {newCustomers.Count}."; ;
+            return $"Successfully imported {newCustomers.Count}.";
         }
 
         public static string ImportSales(CarDealerContext context, string inputJson)
@@ -159,9 +159,6 @@ namespace CarDealer
             List<Sale> validSales = new List<Sale>();
             foreach (ImportSaleDto saleDto in saleDtos)
             {
-                if (context.Cars.Find(saleDto.CarId) == null ||
-                    context.Customers.Find(saleDto.CustomerId) == null) continue;
-
                 Sale newSale = mapper.Map<Sale>(saleDto);
                 validSales.Add(newSale);
             }
@@ -179,7 +176,7 @@ namespace CarDealer
             var customers = context.Customers
                 .AsNoTracking()
                 .OrderBy(c => c.BirthDate)
-                .ThenByDescending(c => c.IsYoungDriver)
+                .ThenBy(c => c.IsYoungDriver)
                 .ProjectTo<ExportCustomerDto>(config)
                 .ToList();
 
@@ -196,7 +193,7 @@ namespace CarDealer
                 .AsNoTracking()
                 .Where(c => c.Make == searchedMake)
                 .OrderBy(c => c.Model)
-                .ThenByDescending(c => c.TravelledDistance)
+                .ThenByDescending(c => c.TraveledDistance)
                 .ProjectTo<ExportCarDto>(config)
                 .ToList();
 
@@ -235,7 +232,7 @@ namespace CarDealer
                     {
                          c.Make,
                          c.Model,
-                         c.TravelledDistance
+                         c.TraveledDistance
                     },
                     parts = c.PartsCars
                         .Select(pc => new
@@ -244,7 +241,8 @@ namespace CarDealer
                             Price = pc.Part.Price.ToString("F2")
                         })
                         .ToArray()
-                });
+                })
+                .ToList();
 
 
             var carsJson = JsonConvert.SerializeObject(cars, Formatting.Indented);
@@ -254,8 +252,6 @@ namespace CarDealer
 
         public static string GetTotalSalesByCustomer(CarDealerContext context)
         {
-            var config = CreateMapper().ConfigurationProvider;
-
             var sales = context.Customers
                 .AsNoTracking()
                 .Include(c => c.Sales)

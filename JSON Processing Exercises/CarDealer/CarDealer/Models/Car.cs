@@ -17,7 +17,7 @@ namespace CarDealer.Models
         [MaxLength(EntityValidations.CarModelMaxLength)]
         public string Model { get; set; } = null!;
 
-        public int TravelledDistance { get; set; }
+        public int TraveledDistance { get; set; }
 
         [InverseProperty(nameof(Car))]
         public ICollection<Sale> Sales { get; set; } = new List<Sale>();    

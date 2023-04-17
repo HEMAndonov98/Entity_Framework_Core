@@ -8,5 +8,5 @@ public class ExportCarDto
     
     public string Model { get; set; } = null!;
 
-    public int TravelledDistance { get; set; }
+    public int TraveledDistance { get; set; }
 }

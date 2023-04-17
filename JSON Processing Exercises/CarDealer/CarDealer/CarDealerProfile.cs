@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using AutoMapper;
 using CarDealer.DTOs.Export;
 using CarDealer.DTOs.Import;
 using CarDealer.Models;
@@ -26,13 +27,19 @@ namespace CarDealer
            
             
             //Car
-            this.CreateMap<ImportCarDto, Car>();
-            this.CreateMap<Car, ExportCarDto>();
+            this.CreateMap<ImportCarDto, Car>()
+                .ForMember(dst => dst.TraveledDistance, opt => opt
+                    .MapFrom(src => src.TraveledDistance));
+            this.CreateMap<Car, ExportCarDto>()
+                .ForMember(dst => dst.TraveledDistance, opt => opt
+                    .MapFrom(src => src.TraveledDistance));
 
 
             //Customer
             this.CreateMap<ImportCustomerDto, Customer>();
-            this.CreateMap<Customer, ExportCustomerDto>();
+            this.CreateMap<Customer, ExportCustomerDto>()
+                .ForMember(dst => dst.BirthDate, opt => opt
+                    .MapFrom(src => src.BirthDate.Date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)));
             //Sale
             this.CreateMap<ImportSaleDto, Sale>();
             this.CreateMap<Sale, ExportSaleDto>()
