@@ -17,9 +17,11 @@ namespace ProductShop
 
             string usersXmltoString = File.ReadAllText("../../../Datasets/users.xml");
             string productsXmlString = File.ReadAllText("../../../Datasets/products.xml");
+            string categoryXmlString = File.ReadAllText("../../../Datasets/categories.xml");
 
             Console.WriteLine(ImportUsers(context, usersXmltoString));
             Console.WriteLine(ImportProducts(context, productsXmlString));
+            Console.WriteLine(ImportCategories(context, categoryXmlString));
         }
 
         public static void ResetDatabase(ProductShopContext context)
@@ -90,6 +92,33 @@ namespace ProductShop
             context.SaveChanges();
             
             return $"Successfully imported {validProducts.Count}";
+        }
+
+        public static string ImportCategories(ProductShopContext context, string inputXml)
+        {
+            var mapper = CreateMapper();
+            var serialiser = new XmlSerializer(typeof(ImportCategoryDto));
+
+            XElement[] xCategories = XDocument.Parse(inputXml)
+                .Root!
+                .Elements()
+                .ToArray();
+
+            List<Category> validCategories = new List<Category>();
+            foreach (var xCategory in xCategories)
+            {
+                if (xCategory.Element("name") == null) continue;
+
+                ImportCategoryDto categoryDto = (ImportCategoryDto)serialiser.Deserialize(xCategory.CreateReader())!;
+                if (categoryDto == null) throw new InvalidDataException();
+                
+                validCategories.Add(mapper.Map<Category>(categoryDto));
+            }
+            
+            context.Categories.AddRange(validCategories);
+            context.SaveChanges();
+
+            return $"Successfully imported {validCategories.Count}";
         }
     }
 }
