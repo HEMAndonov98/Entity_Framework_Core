@@ -1,8 +1,12 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using ProductShop.Data;
+using ProductShop.DTOs.Export;
 using ProductShop.DTOs.Import;
 using ProductShop.Models;
 
@@ -13,17 +17,38 @@ namespace ProductShop
         public static void Main()
         {
             var context = new ProductShopContext();
-            ResetDatabase(context);
+            // ResetDatabase(context);
+            //
+            // string usersXmltoString = File.ReadAllText("../../../Datasets/users.xml");
+            // string productsXmlString = File.ReadAllText("../../../Datasets/products.xml");
+            // string categoryXmlString = File.ReadAllText("../../../Datasets/categories.xml");
+            // string categoryProductXmlString = File.ReadAllText("../../../Datasets/categories-products.xml");
+            //
+            // Console.WriteLine(ImportUsers(context, usersXmltoString));
+            // Console.WriteLine(ImportProducts(context, productsXmlString));
+            // Console.WriteLine(ImportCategories(context, categoryXmlString));
+            // Console.WriteLine(ImportCategoryProducts(context, categoryProductXmlString));
 
-            string usersXmltoString = File.ReadAllText("../../../Datasets/users.xml");
-            string productsXmlString = File.ReadAllText("../../../Datasets/products.xml");
-            string categoryXmlString = File.ReadAllText("../../../Datasets/categories.xml");
-            string categoryProductXmlString = File.ReadAllText("../../../Datasets/categories-products.xml");
+            XmlWriterSettings writerSettings = new XmlWriterSettings()
+            {
+                Indent = true
+            };
 
-            Console.WriteLine(ImportUsers(context, usersXmltoString));
-            Console.WriteLine(ImportProducts(context, productsXmlString));
-            Console.WriteLine(ImportCategories(context, categoryXmlString));
-            Console.WriteLine(ImportCategoryProducts(context, categoryProductXmlString));
+            WriteProductsToResult(context, writerSettings);
+        }
+
+        private static void WriteProductsToResult(ProductShopContext context, XmlWriterSettings writerSettings)
+        {
+            XDocument document = XDocument.Parse(GetProductsInRange(context));
+            string fileProductsPath = "../../../Results/Products.xml";
+
+            if (File.Exists(fileProductsPath))
+            {
+                File.Delete(fileProductsPath);
+            }
+
+            using XmlWriter writer = XmlWriter.Create(fileProductsPath, writerSettings);
+            document.WriteTo(writer);
         }
 
         public static void ResetDatabase(ProductShopContext context)
@@ -71,7 +96,7 @@ namespace ProductShop
              var mapper = CreateMapper();
              var serialiser = new XmlSerializer(typeof(ImportProductDto));
 
-             XElement[] products = XDocument.Parse(inputXml)!
+             XElement[] products = XDocument.Parse(inputXml)
                 .Root!
                 .Elements()
                 .ToArray();
@@ -148,6 +173,38 @@ namespace ProductShop
             context.SaveChanges();
             
             return $"Successfully imported {validCategoryProducts.Count}";
+        }
+
+        public static string GetProductsInRange(ProductShopContext context)
+        {
+            var result = new StringBuilder();
+            var config = CreateMapper().ConfigurationProvider;
+            int productMinPrice = 500;
+            int productMaxPrice = 1000;
+
+            var productsInRange = context.Products
+                .AsNoTracking()
+                .Include(p => p.Buyer)
+                .Where(p => p.Price >= productMinPrice &&
+                            p.Price <= productMaxPrice)
+                .OrderBy(p => p.Price)
+                .Take(10)
+                .ProjectTo<ProductsExportDto>(config)
+                .ToArray();
+
+            var root = new XmlRootAttribute("Products");
+            var serializer = new XmlSerializer(typeof(ProductsExportDto[]), root);
+
+            using (StringWriter writer = new StringWriter())
+            {
+                serializer.Serialize(writer, productsInRange);
+                result.AppendLine(writer.ToString());
+            }
+
+
+            return result
+                .ToString()
+                .Trim();
         }
     }
 }
