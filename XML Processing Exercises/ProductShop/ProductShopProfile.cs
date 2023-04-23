@@ -13,6 +13,9 @@ namespace ProductShop
             
             //Users
             this.CreateMap<ImportUserDto, User>();
+            this.CreateMap<User, ExportSellerDto>()
+                .ForMember(dst => dst.SoldProducts, opt => opt
+                    .MapFrom(src => src.ProductsSold.ToArray()));
             
             //Products
             this.CreateMap<ImportProductDto, Product>();
@@ -23,6 +26,7 @@ namespace ProductShop
                             string.Join(" ", src.Buyer.FirstName, src.Buyer.LastName) : string.Empty
                             )
                 );
+            this.CreateMap<Product, ExportSellerProductDto>();
             
             //Category
             this.CreateMap<ImportCategoryDto, Category>();

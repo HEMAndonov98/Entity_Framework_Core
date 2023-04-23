@@ -34,7 +34,21 @@ namespace ProductShop
                 Indent = true
             };
 
-            WriteProductsToResult(context, writerSettings);
+            //WriteProductsToResult(context, writerSettings);
+            WriteUsersToResults(context, writerSettings);
+        }
+
+        private static void WriteUsersToResults(ProductShopContext context, XmlWriterSettings writerSettings)
+        {
+            XDocument document = XDocument.Parse(GetSoldProducts(context));
+            string resultPath = "../../../Results/Users.xml";
+            
+            if (File.Exists(resultPath)) File.Delete(resultPath);
+
+            //Create a writer that can write an xml
+            using XmlWriter xmlWriter = XmlWriter.Create(resultPath, writerSettings);
+            //write the parsed xmlString to XDocument to the writer which will write the xml to a file with a specific path
+            document.WriteTo(xmlWriter);
         }
 
         private static void WriteProductsToResult(ProductShopContext context, XmlWriterSettings writerSettings)
@@ -204,6 +218,32 @@ namespace ProductShop
 
             return result
                 .ToString()
+                .Trim();
+        }
+
+        public static string GetSoldProducts(ProductShopContext context)
+        {
+            var config = CreateMapper().ConfigurationProvider;
+
+            var users = context.Users
+                .AsNoTracking()
+                .Include(u => u.ProductsSold)
+                .Where(u => u.ProductsSold.Any() && 
+                            u.ProductsSold.Any(p => p.Seller != null))
+                .OrderBy(u => u.LastName)
+                .ThenBy(u => u.FirstName)
+                .Take(5)
+                .ProjectTo<ExportSellerDto>(config)
+                .ToArray();
+
+            var root = new XmlRootAttribute("Users");
+            var serializer = new XmlSerializer(typeof(ExportSellerDto[]), root);
+
+            using StringWriter writer = new StringWriter();
+            serializer.Serialize(writer, users);
+            
+            
+            return writer.ToString()
                 .Trim();
         }
     }

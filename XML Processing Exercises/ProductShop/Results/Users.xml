@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Users xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <User>
+    <firstName>Almire</firstName>
+    <lastName>Ainslee</lastName>
+    <soldProducts>
+      <Product>
+        <name>Ampicillin</name>
+        <price>674.63</price>
+      </Product>
+      <Product>
+        <name>H-Rosacea Formula</name>
+        <price>99.74</price>
+      </Product>
+      <Product>
+        <name>Metoprolol Tartrate</name>
+        <price>1405.74</price>
+      </Product>
+    </soldProducts>
+  </User>
+  <User>
+    <firstName>Karena</firstName>
+    <lastName>Aldersea</lastName>
+    <soldProducts>
+      <Product>
+        <name>Labetalol Hydrochloride</name>
+        <price>1345.11</price>
+      </Product>
+      <Product>
+        <name>ziprasidone hydrochloride</name>
+        <price>628.66</price>
+      </Product>
+    </soldProducts>
+  </User>
+  <User>
+    <firstName>Arden</firstName>
+    <lastName>Arboin</lastName>
+    <soldProducts>
+      <Product>
+        <name>Childrens Allegra Allergy</name>
+        <price>650.97</price>
+      </Product>
+      <Product>
+        <name>EMEND</name>
+        <price>1365.51</price>
+      </Product>
+      <Product>
+        <name>Head and Shoulders Conditioner</name>
+        <price>1099.59</price>
+      </Product>
+      <Product>
+        <name>Pollens - Trees, Birch Mix</name>
+        <price>1153.54</price>
+      </Product>
+      <Product>
+        <name>Pioglitazone</name>
+        <price>306.56</price>
+      </Product>
+    </soldProducts>
+  </User>
+  <User>
+    <firstName>Etta</firstName>
+    <lastName>Arnaudi</lastName>
+    <soldProducts>
+      <Product>
+        <name>Phenylephrine HCl</name>
+        <price>459.89</price>
+      </Product>
+      <Product>
+        <name>PLANTAGO LANCEOLATA POLLEN</name>
+        <price>561.68</price>
+      </Product>
+    </soldProducts>
+  </User>
+  <User>
+    <firstName>Art</firstName>
+    <lastName>Bensusan</lastName>
+    <soldProducts>
+      <Product>
+        <name>Care One Hemorrhoidal</name>
+        <price>932.18</price>
+      </Product>
+      <Product>
+        <name>Enalapril Maleate</name>
+        <price>72.71</price>
+      </Product>
+      <Product>
+        <name>AIR</name>
+        <price>581.69</price>
+      </Product>
+      <Product>
+        <name>Echinacea Quartz Gum Support</name>
+        <price>570.08</price>
+      </Product>
+      <Product>
+        <name>ESIKA</name>
+        <price>879.37</price>
+      </Product>
+    </soldProducts>
+  </User>
+</Users>
