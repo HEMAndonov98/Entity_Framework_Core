@@ -35,7 +35,22 @@ namespace ProductShop
             };
 
             //WriteProductsToResult(context, writerSettings);
-            WriteUsersToResults(context, writerSettings);
+            //WriteUsersToResults(context, writerSettings);
+            WriteCategoriesToResults(context, writerSettings);
+        }
+
+        private static void WriteCategoriesToResults(ProductShopContext context, XmlWriterSettings writerSettings)
+        {
+            string path = "../../../Results/Categories.xml";
+            XDocument document = XDocument.Parse(GetCategoriesByProductsCount(context));
+
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            using XmlWriter writer = XmlWriter.Create(path, writerSettings);
+            document.WriteTo(writer);
         }
 
         private static void WriteUsersToResults(ProductShopContext context, XmlWriterSettings writerSettings)
@@ -243,6 +258,29 @@ namespace ProductShop
             serializer.Serialize(writer, users);
             
             
+            return writer.ToString()
+                .Trim();
+        }
+
+        public static string GetCategoriesByProductsCount(ProductShopContext context)
+        {
+            var config = CreateMapper().ConfigurationProvider;
+
+            var categories = context.Categories
+                .AsNoTracking()
+                .Include(c => c.CategoryProducts)
+                .ThenInclude(cp => cp.Product)
+                .ProjectTo<ExportCategoryDto>(config)
+                .OrderByDescending(dto => dto.ProductCount)
+                .ThenBy(dto => dto.TotalRevenue)
+                .ToArray();
+
+            var root = new XmlRootAttribute("Categories");
+            var serializer = new XmlSerializer(typeof(ExportCategoryDto[]), root);
+
+            using StringWriter writer = new StringWriter();
+            serializer.Serialize(writer, categories);
+
             return writer.ToString()
                 .Trim();
         }

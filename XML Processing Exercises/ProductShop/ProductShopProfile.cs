@@ -30,7 +30,15 @@ namespace ProductShop
             
             //Category
             this.CreateMap<ImportCategoryDto, Category>();
-            
+            this.CreateMap<Category, ExportCategoryDto>()
+                .ForMember(dst => dst.TotalRevenue, opt => opt
+                    .MapFrom(src => src.CategoryProducts
+                        .Select(cp => cp.Product.Price).Sum()))
+                .ForMember(dst => dst.ProductCount, opt => opt
+                    .MapFrom(src => src.CategoryProducts.Count))
+                .ForMember(dst => dst.AveragePrice, opt => opt
+                    .MapFrom(src =>
+                        (src.CategoryProducts.Select(cp => cp.Product.Price).Sum() / src.CategoryProducts.Count)));
             //CategoryProduct
             this.CreateMap<ImportCategoryProductDto, CategoryProduct>();
         }
