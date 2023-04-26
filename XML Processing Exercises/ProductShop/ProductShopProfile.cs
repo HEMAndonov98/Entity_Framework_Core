@@ -16,6 +16,18 @@ namespace ProductShop
             this.CreateMap<User, ExportSellerDto>()
                 .ForMember(dst => dst.SoldProducts, opt => opt
                     .MapFrom(src => src.ProductsSold.ToArray()));
+
+            this.CreateMap<User, ExportUsersWithProductsDto>()
+                .ForMember(dst => dst.SoldProducts, opt => opt
+                    .MapFrom(src => src.ProductsSold
+                        .ToArray())
+                );
+            
+            this.CreateMap<User[], ExportUsersWrapper>()
+                .ForMember(dst => dst.Users, opt => opt
+                    .MapFrom(src => src))
+                .ForMember(dst => dst.Count, opt => opt
+                    .Ignore());
             
             //Products
             this.CreateMap<ImportProductDto, Product>();
@@ -27,6 +39,14 @@ namespace ProductShop
                             )
                 );
             this.CreateMap<Product, ExportSellerProductDto>();
+
+            this.CreateMap<Product[], ExportSoldProductsDto>()
+                .ForMember(dst => dst.Products, opt => opt
+                    .MapFrom(src => src
+                        .OrderByDescending(p => p.Price)
+                        .ToArray()))
+                .ForMember(dst => dst.Count, opt => opt
+                    .MapFrom(src => src.Length));
             
             //Category
             this.CreateMap<ImportCategoryDto, Category>();

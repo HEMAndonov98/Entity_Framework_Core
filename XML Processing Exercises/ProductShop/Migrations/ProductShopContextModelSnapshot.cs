@@ -68,8 +68,8 @@ namespace ProductShop.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(120)
-                        .HasColumnType("nvarchar(120)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("DEC(16,2)");
@@ -134,8 +134,7 @@ namespace ProductShop.Migrations
                 {
                     b.HasOne("ProductShop.Models.User", "Buyer")
                         .WithMany("ProductsBought")
-                        .HasForeignKey("BuyerId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("BuyerId");
 
                     b.HasOne("ProductShop.Models.User", "Seller")
                         .WithMany("ProductsSold")

@@ -36,7 +36,24 @@ namespace ProductShop
 
             //WriteProductsToResult(context, writerSettings);
             //WriteUsersToResults(context, writerSettings);
-            WriteCategoriesToResults(context, writerSettings);
+            //WriteCategoriesToResults(context, writerSettings);
+            WriteUsersWithProductsToResults(context, writerSettings);
+
+        }
+
+        private static void WriteUsersWithProductsToResults(ProductShopContext context, XmlWriterSettings writerSettings)
+        {
+            string path = "../../../Results/UsersWithProducts.xml";
+
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            XDocument document = XDocument.Parse(GetUsersWithProducts(context));
+
+            using XmlWriter xmlWriter = XmlWriter.Create(path, writerSettings);
+            document.WriteTo(xmlWriter);
         }
 
         private static void WriteCategoriesToResults(ProductShopContext context, XmlWriterSettings writerSettings)
@@ -143,10 +160,11 @@ namespace ProductShop
                 ImportProductDto dto = (ImportProductDto)serialiser.Deserialize(product.CreateReader())!;
                 validProducts.Add(mapper.Map<Product>(dto));
             }
-            
+
+
             context.Products.AddRange(validProducts);
             context.SaveChanges();
-            
+
             return $"Successfully imported {validProducts.Count}";
         }
 
@@ -280,6 +298,35 @@ namespace ProductShop
 
             using StringWriter writer = new StringWriter();
             serializer.Serialize(writer, categories);
+
+            return writer.ToString()
+                .Trim();
+        }
+
+        public static string GetUsersWithProducts(ProductShopContext context)
+        {
+            var mapper = CreateMapper();
+
+            var query = context.Users
+                .AsNoTracking()
+                .Include(u => u.ProductsSold)
+                .Where(u => u.ProductsSold.Any())
+                .OrderByDescending(u => u.ProductsSold.Count)
+                .Take(10)
+                .ToArray();
+
+            var usersCount = context.Users
+                .AsNoTracking()
+                .Include(u => u.ProductsSold)
+                .Count(u => u.ProductsSold.Any());
+            
+            var users = mapper.Map<ExportUsersWrapper>(query);
+            users.Count = usersCount;
+
+            var serializer = new XmlSerializer(typeof(ExportUsersWrapper));
+            
+            using StringWriter writer = new StringWriter();
+            serializer.Serialize(writer, users);
 
             return writer.ToString()
                 .Trim();
