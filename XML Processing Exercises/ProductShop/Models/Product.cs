@@ -30,7 +30,7 @@ namespace ProductShop.Models
         [ForeignKey(nameof(Buyer))]
         public int? BuyerId { get; set; }
 
-        public User? Buyer { get; set; }
+        public User Buyer { get; set; }
 
         [InverseProperty(nameof(Product))]
         public ICollection<CategoryProduct> CategoryProducts { get; set; }

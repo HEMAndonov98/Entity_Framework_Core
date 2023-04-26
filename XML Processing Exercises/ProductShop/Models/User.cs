@@ -26,9 +26,9 @@ namespace ProductShop.Models
 
         public int? Age { get; set; }
 
-        [InverseProperty(nameof(Product.Buyer))]
-        public ICollection<Product> ProductsSold { get; set; }
         [InverseProperty(nameof(Product.Seller))]
+        public ICollection<Product> ProductsSold { get; set; }
+        [InverseProperty(nameof(Product.Buyer))]
         public ICollection<Product> ProductsBought { get; set; }
     }
 }

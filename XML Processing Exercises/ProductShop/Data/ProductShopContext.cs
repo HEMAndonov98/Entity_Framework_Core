@@ -35,19 +35,17 @@
                 entity.HasKey(x => new { x.CategoryId, x.ProductId});
             });
 
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasMany(x => x.ProductsBought)
-                      .WithOne(x => x.Buyer)
-                      .HasForeignKey(x => x.BuyerId)
-                      .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Seller)
+                .WithMany(u => u.ProductsSold)
+                .HasForeignKey(p => p.SellerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasMany(x => x.ProductsSold)
-                      .WithOne(x => x.Seller)
-                      .HasForeignKey(x => x.SellerId)
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
-            
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Buyer)
+                .WithMany(u => u.ProductsBought)
+                .HasForeignKey(p => p.BuyerId)
+                .IsRequired(false);
         }
     }
 }
