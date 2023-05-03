@@ -1,9 +1,13 @@
-﻿using System.Xml.Linq;
+﻿using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using CarDealer.Data;
+using CarDealer.DTOs.Export;
 using CarDealer.DTOs.Import;
 using CarDealer.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarDealer
 {
@@ -18,13 +22,16 @@ namespace CarDealer
             // string partsInputXml = File.ReadAllText(GetFullPath("parts", ".xml"));
             // string carsInputXml = File.ReadAllText(GetFullPath("cars", ".xml"));
             // string customerInputXml = File.ReadAllText(GetFullPath("customers", ".xml"));
-            string salesInputXml = File.ReadAllText(GetFullPath("sales", ".xml"));
+            // string salesInputXml = File.ReadAllText(GetFullPath("sales", ".xml"));
             //
             // Console.WriteLine(ImportSuppliers(context, suppliersInputXml));
             // Console.WriteLine(ImportParts(context, partsInputXml));
             // Console.WriteLine(ImportCars(context, carsInputXml));
             // Console.WriteLine(ImportCustomers(context, customerInputXml));
-            Console.WriteLine(ImportSales(context, salesInputXml));
+            // Console.WriteLine(ImportSales(context, salesInputXml));
+
+            string carsXmlResult = GetCarsWithDistance(context);
+            WriteToDataset("cars", carsXmlResult);
         }
 
         private static void ResetDatabase(CarDealerContext context)
@@ -51,6 +58,24 @@ namespace CarDealer
             IMapper mapper = mapperConfig.CreateMapper();
 
             return mapper;
+        }
+
+        private static void WriteToDataset(string ResultName, string result)
+        {
+            var path = $"../../../Results/{ResultName}.xml";
+            XDocument xDocument = XDocument.Parse(result);
+            var settings = new XmlWriterSettings()
+            {
+                Indent = true
+            };
+
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+            
+            using XmlWriter xmlWriter = XmlWriter.Create(path, settings);
+            xDocument.WriteTo(xmlWriter);
         }
 
         public static string ImportSuppliers(CarDealerContext context, string inputXml)
@@ -182,6 +207,29 @@ namespace CarDealer
             context.Sales.AddRange(validSales);
             context.SaveChanges();
             return $"Successfully imported {validSales.Count}";
+        }
+
+        public static string GetCarsWithDistance(CarDealerContext context)
+        {
+            var config = CreateMapper().ConfigurationProvider;
+            var cars = context.Cars
+                .AsNoTracking()
+                .Where(c => c.TraveledDistance > 2000000)
+                .OrderBy(c => c.Make)
+                .ThenBy(c => c.Model)
+                .Take(10)
+                .ProjectTo<ExportCarDto>(config)
+                .ToArray();
+
+            var root = new XmlRootAttribute("Cars");
+            var serializer = new XmlSerializer(typeof(ExportCarDto[]) ,root);
+
+            using StringWriter writer = new();
+            
+            serializer.Serialize(writer, cars);
+
+            return writer.ToString()
+                .Trim();
         }
     }
 }
