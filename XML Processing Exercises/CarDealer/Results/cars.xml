@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Cars xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Car>
+    <make>BMW</make>
+    <model>1M Coupe</model>
+    <traveled-distance>39826890</traveled-distance>
+  </Car>
+  <Car>
+    <make>BMW</make>
+    <model>E67</model>
+    <traveled-distance>476830509</traveled-distance>
+  </Car>
+  <Car>
+    <make>BMW</make>
+    <model>E88</model>
+    <traveled-distance>27453411</traveled-distance>
+  </Car>
+  <Car>
+    <make>BMW</make>
+    <model>F04</model>
+    <traveled-distance>418839575</traveled-distance>
+  </Car>
+  <Car>
+    <make>BMW</make>
+    <model>F04</model>
+    <traveled-distance>443756363</traveled-distance>
+  </Car>
+  <Car>
+    <make>BMW</make>
+    <model>F20</model>
+    <traveled-distance>487897422</traveled-distance>
+  </Car>
+  <Car>
+    <make>BMW</make>
+    <model>F20</model>
+    <traveled-distance>284809463</traveled-distance>
+  </Car>
+  <Car>
+    <make>BMW</make>
+    <model>F20</model>
+    <traveled-distance>401291910</traveled-distance>
+  </Car>
+  <Car>
+    <make>BMW</make>
+    <model>F25</model>
+    <traveled-distance>476132712</traveled-distance>
+  </Car>
+  <Car>
+    <make>BMW</make>
+    <model>M Roadster E85</model>
+    <traveled-distance>475685374</traveled-distance>
+  </Car>
+</Cars>
