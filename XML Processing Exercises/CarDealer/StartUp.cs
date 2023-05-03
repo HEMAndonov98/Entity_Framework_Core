@@ -17,12 +17,14 @@ namespace CarDealer
             // string suppliersInputXml = File.ReadAllText(GetFullPath("suppliers", ".xml"));
             // string partsInputXml = File.ReadAllText(GetFullPath("parts", ".xml"));
             // string carsInputXml = File.ReadAllText(GetFullPath("cars", ".xml"));
-            //string customerInputXml = File.ReadAllText(GetFullPath("customers", ".xml"));
+            // string customerInputXml = File.ReadAllText(GetFullPath("customers", ".xml"));
+            string salesInputXml = File.ReadAllText(GetFullPath("sales", ".xml"));
             //
             // Console.WriteLine(ImportSuppliers(context, suppliersInputXml));
             // Console.WriteLine(ImportParts(context, partsInputXml));
             // Console.WriteLine(ImportCars(context, carsInputXml));
-            //Console.WriteLine(ImportCustomers(context, customerInputXml));
+            // Console.WriteLine(ImportCustomers(context, customerInputXml));
+            Console.WriteLine(ImportSales(context, salesInputXml));
         }
 
         private static void ResetDatabase(CarDealerContext context)
@@ -156,6 +158,30 @@ namespace CarDealer
             context.AddRange(customers);
             context.SaveChanges();
             return $"Successfully imported {customers.Count}";
+        }
+
+        public static string ImportSales(CarDealerContext context, string inputXml)
+        {
+            var mapper = CreateMapper();
+            var root = new XmlRootAttribute("Sales");
+
+            var serializer = new XmlSerializer(typeof(ImportSaleDto[]), root);
+            using StringReader reader = new StringReader(inputXml);
+
+            var dtos = (ImportSaleDto[])serializer.Deserialize(reader)!;
+
+            List<Sale> validSales = new();
+            for (int i = 0; i < dtos.Length; i++)
+            {
+                if (context.Cars.Find(dtos[i].CarId) != null)
+                {
+                    validSales.Add(mapper.Map<Sale>(dtos[i]));
+                }
+            }
+
+            context.Sales.AddRange(validSales);
+            context.SaveChanges();
+            return $"Successfully imported {validSales.Count}";
         }
     }
 }
