@@ -38,6 +38,9 @@ namespace CarDealer
 
             // string suppliersXmlResult = GetLocalSuppliers(context);
             // WriteToDataset("suppliers", suppliersXmlResult);
+
+            // string carsWithPartsXmlResult = GetCarsWithTheirListOfParts(context);
+            // WriteToDataset("cars-parts", carsWithPartsXmlResult);
         }
 
         private static void ResetDatabase(CarDealerContext context)
@@ -276,6 +279,29 @@ namespace CarDealer
             
             serializer.Serialize(writer, suppliers);
 
+            return writer.ToString()
+                .Trim();
+        }
+
+        public static string GetCarsWithTheirListOfParts(CarDealerContext context)
+        {
+            var config = CreateMapper().ConfigurationProvider;
+            var root = new XmlRootAttribute("cars");
+
+            var cars = context.Cars
+                .Include(c => c.PartsCars)
+                .ThenInclude(pc => pc.Part)
+                .AsNoTracking()
+                .OrderByDescending(c => c.TraveledDistance)
+                .ThenBy(c => c.Model)
+                .Take(5)
+                .ProjectTo<ExportCarsWithPartsDto>(config)
+                .ToArray();
+
+            var serializer = new XmlSerializer(typeof(ExportCarsWithPartsDto[]), root);
+            using StringWriter writer = new();
+            
+            serializer.Serialize(writer, cars);
             return writer.ToString()
                 .Trim();
         }
