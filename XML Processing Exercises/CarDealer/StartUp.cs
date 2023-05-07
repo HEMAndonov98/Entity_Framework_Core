@@ -35,6 +35,9 @@ namespace CarDealer
 
             // string bmwXmlResult = GetCarsFromMakeBmw(context);
             // WriteToDataset("bmw-cars", bmwXmlResult);
+
+            // string suppliersXmlResult = GetLocalSuppliers(context);
+            // WriteToDataset("suppliers", suppliersXmlResult);
         }
 
         private static void ResetDatabase(CarDealerContext context)
@@ -253,6 +256,26 @@ namespace CarDealer
             using StringWriter writer = new StringWriter();
             serializer.Serialize(writer, bmwCars);
             
+            return writer.ToString()
+                .Trim();
+        }
+
+        public static string GetLocalSuppliers(CarDealerContext context)
+        {
+            var config = CreateMapper().ConfigurationProvider;
+            var root = new XmlRootAttribute("suppliers");
+
+            var suppliers = context.Suppliers
+                .AsNoTracking()
+                .Where(s => s.IsImporter == false)
+                .ProjectTo<ExportSupplierDto>(config)
+                .ToArray();
+
+            var serializer = new XmlSerializer(typeof(ExportSupplierDto[]), root);
+            using StringWriter writer = new StringWriter();
+            
+            serializer.Serialize(writer, suppliers);
+
             return writer.ToString()
                 .Trim();
         }
