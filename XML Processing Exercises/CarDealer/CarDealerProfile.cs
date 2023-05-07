@@ -18,6 +18,7 @@ namespace CarDealer
             //Car
             this.CreateMap<ImportCarDto, Car>();
             this.CreateMap<Car, ExportCarDto>();
+            this.CreateMap<Car, ExportBmwCarDto>();
             
             //Customer
             this.CreateMap<ImportCustomerDto, Customer>();

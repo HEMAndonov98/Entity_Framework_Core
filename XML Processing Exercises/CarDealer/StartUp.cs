@@ -30,8 +30,11 @@ namespace CarDealer
             // Console.WriteLine(ImportCustomers(context, customerInputXml));
             // Console.WriteLine(ImportSales(context, salesInputXml));
 
-            string carsXmlResult = GetCarsWithDistance(context);
-            WriteToDataset("cars", carsXmlResult);
+            // string carsXmlResult = GetCarsWithDistance(context);
+            // WriteToDataset("cars", carsXmlResult);
+
+            // string bmwXmlResult = GetCarsFromMakeBmw(context);
+            // WriteToDataset("bmw-cars", bmwXmlResult);
         }
 
         private static void ResetDatabase(CarDealerContext context)
@@ -228,6 +231,28 @@ namespace CarDealer
             
             serializer.Serialize(writer, cars);
 
+            return writer.ToString()
+                .Trim();
+        }
+
+        public static string GetCarsFromMakeBmw(CarDealerContext context)
+        {
+            var config = CreateMapper().ConfigurationProvider;
+            var root = new XmlRootAttribute("cars");
+
+            var serializer = new XmlSerializer(typeof(ExportBmwCarDto[]), root);
+
+            var bmwCars = context.Cars
+                .AsNoTracking()
+                .Where(c => c.Make.ToLower() == "bmw")
+                .OrderBy(c => c.Model)
+                .ThenByDescending(c => c.TraveledDistance)
+                .ProjectTo<ExportBmwCarDto>(config)
+                .ToArray();
+
+            using StringWriter writer = new StringWriter();
+            serializer.Serialize(writer, bmwCars);
+            
             return writer.ToString()
                 .Trim();
         }
