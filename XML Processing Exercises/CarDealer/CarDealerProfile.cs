@@ -51,7 +51,7 @@ namespace CarDealer
 
                 if (customer.IsYoungDriver)
                 {
-                    discount = sale.Discount / 100;
+                    discount = (decimal)0.05;
                 }
 
                 var totalPartsCost = sale.Car.PartsCars
@@ -60,7 +60,7 @@ namespace CarDealer
                 totalSpent += totalPartsCost - (totalPartsCost * discount);
             }
 
-            return decimal.Round(totalSpent, 2, MidpointRounding.AwayFromZero);
+            return decimal.Round(totalSpent, 2, MidpointRounding.ToZero);
         }
     }
 }

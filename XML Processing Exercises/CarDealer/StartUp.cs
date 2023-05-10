@@ -43,8 +43,8 @@ namespace CarDealer
             // WriteToDataset("cars-parts", carsWithPartsXmlResult);
 
             
-            string customersXmlResult = GetTotalSalesByCustomer(context);
-            WriteToDataset("customers", customersXmlResult);
+             // string customersXmlResult = GetTotalSalesByCustomer(context);
+            // WriteToDataset("customers", customersXmlResult);
 
         }
 
