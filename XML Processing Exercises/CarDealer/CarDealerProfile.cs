@@ -31,9 +31,36 @@ namespace CarDealer
             
             //Customer
             this.CreateMap<ImportCustomerDto, Customer>();
-            
+            this.CreateMap<Customer, ExportCustomerDto>()
+                .ForMember(dst => dst.BoughtCars, opt => opt
+                    .MapFrom(src => src.Sales.Count))
+                .ForMember(dst => dst.SpentMoney, opt => opt
+                    .MapFrom(src => CalculateSpentMoney(src)));
             //Sale
             this.CreateMap<ImportSaleDto, Sale>();
+        }
+        
+        //Custom resolver would not work so I had coded the mapping function
+        private static decimal CalculateSpentMoney(Customer customer)
+        {
+            decimal totalSpent = 0;
+
+            foreach (var sale in customer.Sales)
+            {
+                decimal discount = 0;
+
+                if (customer.IsYoungDriver)
+                {
+                    discount = sale.Discount / 100;
+                }
+
+                var totalPartsCost = sale.Car.PartsCars
+                    .Sum(pc => pc.Part.Price);
+
+                totalSpent += totalPartsCost - (totalPartsCost * discount);
+            }
+
+            return decimal.Round(totalSpent, 2, MidpointRounding.AwayFromZero);
         }
     }
 }
