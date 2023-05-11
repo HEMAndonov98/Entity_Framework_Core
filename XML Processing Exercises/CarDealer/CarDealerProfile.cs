@@ -28,6 +28,7 @@ namespace CarDealer
                     .MapFrom(src => src.PartsCars
                         .Select(pc => pc.Part)
                         .OrderByDescending(p => p.Price)));
+            this.CreateMap<Car, SaleCarDto>();
             
             //Customer
             this.CreateMap<ImportCustomerDto, Customer>();
@@ -38,6 +39,25 @@ namespace CarDealer
                     .MapFrom(src => CalculateSpentMoney(src)));
             //Sale
             this.CreateMap<ImportSaleDto, Sale>();
+            this.CreateMap<Sale, ExportSaleDto>()
+                .ForMember(dst => dst.Car, opt => opt
+                    .MapFrom(src => src.Car))
+                .ForMember(dst => dst.CustomerName, opt => opt
+                    .MapFrom(src => src.Customer.Name))
+                .ForMember(dst => dst.Price, opt => opt
+                    .MapFrom(src => src.Car
+                        .PartsCars
+                            .Select(pc => pc.Part.Price)
+                        .Sum()
+                    )
+                )
+                .ForMember(dst => dst.PriceWithDiscount, opt => opt
+                    .MapFrom(src => decimal.Round(src.Car
+                            .PartsCars
+                            .Select(pc => pc.Part.Price)
+                            .Sum() * (1 - src.Discount / 100), 2, MidpointRounding.ToEven)
+                    )
+                );
         }
         
         //Custom resolver would not work so I had coded the mapping function

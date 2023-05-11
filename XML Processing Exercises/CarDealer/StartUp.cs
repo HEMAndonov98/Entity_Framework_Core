@@ -43,8 +43,11 @@ namespace CarDealer
             // WriteToDataset("cars-parts", carsWithPartsXmlResult);
 
             
-             // string customersXmlResult = GetTotalSalesByCustomer(context);
+            // string customersXmlResult = GetTotalSalesByCustomer(context);
             // WriteToDataset("customers", customersXmlResult);
+
+            string salesXmlResult = GetSalesWithAppliedDiscount(context);
+            WriteToDataset("sales", salesXmlResult);
 
         }
 
@@ -332,6 +335,30 @@ namespace CarDealer
             using StringWriter writer = new StringWriter();
             
             serializer.Serialize(writer, customers);
+
+            return writer.ToString()
+                .Trim();
+        }
+
+        public static string GetSalesWithAppliedDiscount(CarDealerContext context)
+        {
+            var config = CreateMapper().ConfigurationProvider;
+            var root = new XmlRootAttribute("sales");
+
+            var sales = context
+                .Sales
+                .Include(s => s.Car)
+                .ThenInclude(c => c.PartsCars)
+                .ThenInclude(pc => pc.Part)
+                .Include(s => s.Customer)
+                .AsNoTracking()
+                .ProjectTo<ExportSaleDto>(config)
+                .ToArray();
+
+            var serializer = new XmlSerializer(typeof(ExportSaleDto[]), root);
+            using StringWriter writer = new();
+
+            serializer.Serialize(writer, sales);
 
             return writer.ToString()
                 .Trim();
