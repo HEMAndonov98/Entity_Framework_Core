@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="12.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PetStore.Data.Models\PetStore.Data.Models.csproj" />
+      <ProjectReference Include="..\PetStore.Web.ViewModels\PetStore.Web.ViewModels.csproj" />
+    </ItemGroup>
+
+</Project>

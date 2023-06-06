@@ -1,0 +1,131 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+<div class="form-container">
+    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <h2>Create a new account.</h2>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-floating" >
+            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true"  required oninput="toggleLabel(this)"/>
+            <label asp-for="Input.Email">Email</label>
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+        <div class="form-floating">
+            <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
+            <label asp-for="Input.Password">Password</label>
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+        <div class="form-floating">
+            <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+            <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+        </div>
+        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+    </form>
+</div>
+<style>
+    /* Custom CSS for Discord-like styling */
+    body {
+        background-color: #1a1e21; /* Replace with your background image */
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+        overflow: hidden;
+    }
+    
+    .form-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+        backdrop-filter: blur(10px);
+        width: 33vw;
+    }
+    
+    .form-container h2 {
+        font-size: 24px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .form-container hr {
+        margin: 20px 0;
+    }
+    
+    .form-floating {
+        position: relative;
+        margin-bottom: 15px;
+    }
+    
+    .form-floating label {
+        position: absolute;
+        top: 50%;
+        left: 16px;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: #8e9297;
+        transition: all 0.25s ease;
+    }
+    
+    .form-floating input {
+        padding: 10px 16px;
+        height: 42px;
+        border-radius: 5px;
+        border: 1px solid #d1d1d1;
+        font-size: 16px;
+    }
+    
+    .form-floating input:focus {
+        outline: none;
+        border-color: #7289da;
+        box-shadow: 0 0 0 3px rgba(114, 137, 218, 0.2);
+    }
+    
+    .form-floating input:not(:placeholder-shown) + label {
+        top: 10px;
+        font-size: 18px;
+        color: #7289da;
+    }
+    
+    .text-danger {
+        font-size: 12px;
+        margin-top: 5px;
+        color: #dc3545;
+    }
+    
+    .btn-primary {
+        background-color: #7289da;
+        border-color: #7289da;
+    }
+    
+    .btn-primary:hover {
+        background-color: #677bc4;
+        border-color: #677bc4;
+    }
+    
+    .btn-primary:focus {
+        outline: none;
+    }
+</style>
+<script>
+function toggleLabel(input) {
+    const label = input.nextElementSibling;
+    if (input.value) {
+        label.style.display = 'none';
+    } else {
+        label.style.display = 'block';
+    }
+}
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+}

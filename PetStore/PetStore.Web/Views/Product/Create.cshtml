@@ -1,0 +1,94 @@
+@model PetStore.Web.ViewModels.Products.CreateProductInputModel
+@using PetStore.Common
+
+@{
+    ViewData["Title"] = "Create Product";
+}
+
+<head>
+    <title>@ViewData["Title"]</title>
+     <style>
+     
+            footer{
+            background-color: white;
+            }
+            
+            .exclude-footer {
+                background-color: #333;
+                color: #fff;
+                font-family: Arial, sans-serif;
+            }
+            
+            #create-product-form {
+                max-width: 400px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #222;
+                border-radius: 5px;
+            }
+            
+            label {
+                display: block;
+                margin-bottom: 10px;
+            }
+            
+            input[type="text"],
+            input[type="number"],
+            textarea,
+            select {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #555;
+                border-radius: 3px;
+                background-color: #444;
+                color: #fff;
+            }
+            
+            input[type="submit"] {
+                width: 100%;
+                padding: 10px;
+                background-color: #f90;
+                border: none;
+                border-radius: 3px;
+                color: #fff;
+                font-weight: bold;
+                cursor: pointer;
+            }
+            
+            input[type="submit"]:hover {
+                background-color: #e58100;
+            }
+            
+            .text-danger {
+                color: #f00;
+                margin-top: 5px;
+            }
+        </style>
+</head>
+<body class="exclude-footer">
+<h1>Create Product</h1>
+
+<form asp-action="Create" id="create-product-form">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" required="true"  minlength="@ProductInputValidationConstants.NameMinLength" maxlength="@ProductInputValidationConstants.NameMaxLength" onerror="@ProductInputValidationConstants.InvalidNameLengthErrorMessage"/>
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price"   class="form-control" type="number" step="any" required="true" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CategoryId" class="form-label">Category</label>
+        <select class="form-select" aria-label="Default select example" asp-for="CategoryId" asp-items="@(new SelectList(ViewBag.CategoryOptions, "Id", "Name"))" class="form-control"></select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <input type="submit" value="Create" class="btn btn-outline-primary" />
+    </div>
+</form>
+</body>

@@ -1,0 +1,30 @@
+@model IEnumerable<PetStore.Web.ViewModels.Categories.CategoryListViewModel>
+
+@{
+    ViewData["Title"] = "Category List";
+}
+
+<h1>@ViewData["Title"]</h1>
+<a class="btn btn-outline-primary" asp-area="" asp-controller="Category" asp-action="Create">Add Category</a>
+<div class="container-sm">
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var category in Model)
+    {
+        <tr>
+            <td class="table-striped">@Html.DisplayName(category.Name)</td>
+            <td>
+                <a type="button" class="btn btn-primary" asp-area="" asp-route-id = "@category.Id" asp-action="Edit">Edit</a>
+                <a type="button" class="btn btn-primary" asp-area="" asp-route-id="@category.Id" asp-action="Delete">Delete</a>
+
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+</div>

@@ -1,0 +1,28 @@
+@using PetStore.Web.ViewModels.Products
+@model IEnumerable<ProductViewModel>
+
+@{
+    ViewData["Title"] = "Product List";
+}
+
+<h1>Product List</h1>
+
+<a class="btn btn-primary" href="@Url.Action("Create", "Product")">Create New Product</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <!-- Add more columns as needed -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <!-- Add more columns as needed -->
+            </tr>
+        }
+    </tbody>
+</table>

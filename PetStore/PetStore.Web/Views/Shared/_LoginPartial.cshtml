@@ -1,0 +1,52 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using PetStore.Data.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello Hristo!</a>
+        </li>
+        <li class="nav-item">
+            <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item-button">
+            <a class="nav-link-button text-dark"  asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li class="nav-item-button">
+            <a class="nav-link-button text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
+</ul>
+
+
+<style>
+.nav-item-button {
+  display: inline-block;
+  margin-right: 10px; /* Adjust the spacing as needed */
+}
+
+.nav-link-button {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: lightblue;
+  text-decoration: none;
+  transition: background-color 0.3s, color 0.3s; /* Adds a transition effect */
+}
+
+.nav-link-button:hover {
+  background-color: white;
+  color: black;
+}
+
+
+</style>
+
