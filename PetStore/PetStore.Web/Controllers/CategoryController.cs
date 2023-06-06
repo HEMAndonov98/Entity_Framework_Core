@@ -55,7 +55,7 @@ namespace PetStore.Web.Controllers
             var item = await this._categoryService.Get(id);
             return View(item);
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> Edit(CategoryListViewModel viewModel)
         {
@@ -63,7 +63,7 @@ namespace PetStore.Web.Controllers
             return RedirectToAction("All");
         }
 
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
             await this._categoryService.Delete(id);

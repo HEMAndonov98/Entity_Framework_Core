@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using PetStore.Services.Data;
 using PetStore.Web.ViewModels.Products;
 
@@ -29,12 +28,22 @@ public class ProductController : Controller
     {
         await this._productService.CreateAsync(inputModel);
         
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("All");
     }
 
+    [HttpGet]
     public async Task<IActionResult> All()
     {
         IEnumerable<ProductViewModel> products = await this._productService.GetAllAsync();
         return View(products);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var productId = id.ToString();
+        await this._productService.DeleteAsync(productId);
+
+        return RedirectToAction("All");
     }
 }

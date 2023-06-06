@@ -10,4 +10,6 @@ public interface IProductService
     public Task<IEnumerable<ProductViewModel>> GetAllAsync();
 
     public Task<IEnumerable<CategoryListViewModel>> GetAllCategoriesAsync();
+
+    public Task DeleteAsync(string id);
 }

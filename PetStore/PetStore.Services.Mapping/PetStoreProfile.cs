@@ -21,6 +21,10 @@ public class PetStoreProfile : Profile
         this.CreateMap<CreateProductInputModel, Product>()
             .ForMember(dst => dst.Price, opt => opt
                 .MapFrom(src => decimal.Parse(src.Price, CultureInfo.InvariantCulture)));
-        this.CreateMap<Product, ProductViewModel>();
+        this.CreateMap<Product, ProductViewModel>()
+            .ForMember(dst => dst.Category, opt => opt
+                .MapFrom(src => src.Category.Name))
+            .ForMember(dst => dst.ProductId, opt => opt
+                .MapFrom(src => new Guid(src.Id)));
     }
 }

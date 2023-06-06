@@ -44,4 +44,16 @@ public class ProductService : IProductService
             .ProjectTo<CategoryListViewModel>(this._mapper.ConfigurationProvider)
             .ToArrayAsync();
     }
+
+    public async Task DeleteAsync(string id)
+    {
+        Product? product = await this._context.Products
+            .FindAsync(id);
+
+        if (product != null)
+        { 
+            this._repository.Delete(product);
+            await this._repository.SaveChangesAsync();
+        }
+    }
 }
