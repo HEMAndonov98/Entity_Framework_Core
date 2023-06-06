@@ -7,28 +7,36 @@
 <h1>@ViewData["Title"]</h1>
 <a class="btn btn-outline-primary" asp-area="" asp-controller="Category" asp-action="Create">Add Category</a>
 <div class="container-sm">
-<table class="table">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th/>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var category in Model)
-    {
+    <table class="table">
+        <thead>
         <tr>
-            <td class="table-striped">@Html.DisplayName(category.Name)</td>
-            <td>
-                <div class="btn-group">
-                <a type="button" class="btn btn-outline-primary" asp-area="" asp-route-id="@category.Id" asp-action="Edit">Edit</a>
-                <form asp-action="Delete" asp-route-id="@category.Id" onsubmit="confirm('Are you sure you want to delete this record?')">
-                    <button type="submit" class="btn btn-outline-danger">Delete</button>
-                </form>
-                </div>
-            </td>
+            <th>Name</th>
+            <th/>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td class="table-striped">@Html.DisplayName(category.Name)</td>
+                <td>
+                    <div class="btn-group">
+                        <a type="button" class="btn btn-outline-primary" asp-area="" asp-route-id="@category.Id" asp-action="Edit">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@category.Id">
+                            <button type="button" class="btn btn-outline-danger" onclick="confirmDelete()">Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
 </div>
+
+<script>
+    function confirmDelete() {
+        if (confirm('Are you sure you want to delete this record?')) {
+            document.getElementById('deleteForm').submit();
+        }
+    }
+</script>
