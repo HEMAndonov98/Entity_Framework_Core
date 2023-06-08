@@ -56,4 +56,26 @@ public class ProductService : IProductService
             await this._repository.SaveChangesAsync();
         }
     }
+
+    public async Task<EditProductModel> GetProduct(string id)
+    {
+        Product? product = await this._context
+            .Products
+            .FindAsync(id);
+
+        if (product == null)
+            throw new InvalidOperationException();
+
+        var editModel = this._mapper.Map<EditProductModel>(product);
+        
+        return editModel;
+    }
+
+    public async Task Edit(EditProductModel model)
+    {
+        Product product = this._mapper.Map<Product>(model);
+        
+        this._repository.Update(product);
+        await this._repository.SaveChangesAsync();
+    }
 }

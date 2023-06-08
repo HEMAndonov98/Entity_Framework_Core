@@ -46,4 +46,22 @@ public class ProductController : Controller
 
         return RedirectToAction("All");
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Edit(Guid id)
+    {
+        var categories = await this._productService.GetAllCategoriesAsync();
+        var product = await this._productService.GetProduct(id.ToString());
+        
+        ViewBag.CategoryOptions = categories;
+        return View(product);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Edit(EditProductModel model)
+    {
+        await this._productService.Edit(model);
+
+        return RedirectToAction("All");
+    }
 }

@@ -29,9 +29,12 @@
             <td>@product.Category</td>
                 
             <td>
-                <form  asp-action="Delete" asp-route-id="@product.ProductId">
+                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                <form asp-action="Delete" asp-route-id="@product.ProductId">
                     <button type="button" class="btn btn-outline-danger" onclick="confirmDelete()">Delete</button>
                 </form>
+                <a type="button" class="btn btn-outline-primary" asp-area="" asp-route-id="@product.ProductId" asp-action="Edit">Edit</a>
+                </div>
             </td>
             <!-- Add more columns as needed -->
         </tr>

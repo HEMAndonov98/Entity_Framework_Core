@@ -1,3 +1,4 @@
+using PetStore.Data.Models;
 using PetStore.Web.ViewModels.Categories;
 using PetStore.Web.ViewModels.Products;
 
@@ -12,4 +13,8 @@ public interface IProductService
     public Task<IEnumerable<CategoryListViewModel>> GetAllCategoriesAsync();
 
     public Task DeleteAsync(string id);
+
+    public Task<EditProductModel> GetProduct(string id);
+
+    public Task Edit(EditProductModel model);
 }
