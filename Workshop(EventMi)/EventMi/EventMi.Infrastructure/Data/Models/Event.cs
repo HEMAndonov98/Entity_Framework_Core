@@ -42,6 +42,7 @@ public class Event
     /// Place where the event is being held
     /// </summary>
     [Required(AllowEmptyStrings = false)]
+    [StringLength(EventConstraints.EventPlaceMaxLength)]
     [Comment("Place where the event is being held")]
     public string Place { get; set; } = null!;
 }

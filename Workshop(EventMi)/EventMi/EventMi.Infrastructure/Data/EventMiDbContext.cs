@@ -1,3 +1,4 @@
+using EventMi.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventMi.Infrastructure.Data;
@@ -14,4 +15,6 @@ public class EventMiDbContext : DbContext
     {
         
     }
+
+    public DbSet<Event> Events { get; set; } = null!;
 }
