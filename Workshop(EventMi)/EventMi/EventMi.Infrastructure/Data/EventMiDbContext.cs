@@ -7,14 +7,15 @@ public class EventMiDbContext : DbContext
 {
     public EventMiDbContext()
     {
-        
     }
-
+    
     public EventMiDbContext(DbContextOptions<EventMiDbContext> options)
     :base(options)
     {
         
     }
+    
 
     public DbSet<Event> Events { get; set; } = null!;
+    
 }

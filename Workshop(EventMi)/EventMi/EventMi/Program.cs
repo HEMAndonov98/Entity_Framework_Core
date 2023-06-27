@@ -7,11 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<EventMiDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("EventMiConnection")));
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<EventMiDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("EventMiConnection")));
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
