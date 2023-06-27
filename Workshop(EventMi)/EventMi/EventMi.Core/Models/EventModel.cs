@@ -7,14 +7,8 @@ namespace EventMi.Core.Models;
 /// <summary>
 /// Event
 /// </summary>
-public class EventModel
+public class EventModel : EventBaseModel
 {
-    /// <summary>
-    /// Event identifier
-    /// </summary>
-
-    public int Id { get; set; }
-
     /// <summary>
     /// The event name
     /// </summary>

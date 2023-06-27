@@ -1,3 +1,5 @@
+using EventMi.Core.Contracts;
+using EventMi.Core.Services;
 using EventMi.Infrastructure.Common.RepositoryContracts;
 using EventMi.Infrastructure.Data;
 using EventMi.Infrastructure.Data.Repositories;
@@ -12,6 +14,8 @@ builder.Services.AddDbContext<EventMiDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("EventMiConnection")));
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+
+builder.Services.AddTransient<IEventService, EventService>();
 
 var app = builder.Build();
 
