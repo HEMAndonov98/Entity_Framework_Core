@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Common\RepositoryContracts\" />
       <Folder Include="Data\Contracts\" />
       <Folder Include="Data\Repositories\" />
     </ItemGroup>

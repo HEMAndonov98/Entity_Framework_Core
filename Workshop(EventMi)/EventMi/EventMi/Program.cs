@@ -1,4 +1,6 @@
+using EventMi.Infrastructure.Common.RepositoryContracts;
 using EventMi.Infrastructure.Data;
+using EventMi.Infrastructure.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<EventMiDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("EventMiConnection")));
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
 var app = builder.Build();
 
