@@ -4,6 +4,9 @@ using EventMi.Common.ErrorMessages;
 
 namespace EventMi.Core.Models;
 
+/// <summary>
+/// Event
+/// </summary>
 public class EventModel
 {
     /// <summary>
@@ -16,26 +19,31 @@ public class EventModel
     /// The event name
     /// </summary>
     [Display(Name = "The event name")]
-    [Required(AllowEmptyStrings = false, ErrorMessage = EventModelErrors.RequiredNameField)]
-    [StringLength(EventConstraints.EventNameMaxLength, MinimumLength = EventConstraints.EventNameMinLength)]
+    [Required(AllowEmptyStrings = false, ErrorMessage = EventModelErrors.RequiredField)]
+    [StringLength(EventConstraints.EventNameMaxLength, MinimumLength = EventConstraints.EventNameMinLength
+    , ErrorMessage = EventModelErrors.InvalidFieldLength)]
     public string Name { get; set; } = null!;
 
     /// <summary>
     /// Start date and time of event
     /// </summary>
-    [Required]
+    [Display(Name = "Start date and time of event")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = EventModelErrors.RequiredField)]
     public DateTime Start { get; set; }
 
     /// <summary>
     /// End date and time of event
     /// </summary>
-    [Required]
+    [Display(Name = "End date and time of event")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = EventModelErrors.RequiredField)]
     public DateTime End { get; set; }
 
     /// <summary>
     /// Place where the event is being held
     /// </summary>
-    [Required(AllowEmptyStrings = false)]
-    [StringLength(EventConstraints.EventPlaceMaxLength, MinimumLength = EventConstraints.EventPlaceMinLength)]
+    [Display(Name = "Place where the event is being held")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = EventModelErrors.RequiredField)]
+    [StringLength(EventConstraints.EventPlaceMaxLength, MinimumLength = EventConstraints.EventPlaceMinLength,
+        ErrorMessage = EventModelErrors.InvalidFieldLength)]
     public string Place { get; set; } = null!;
 }
