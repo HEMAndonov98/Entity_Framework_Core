@@ -1,5 +1,9 @@
 using EventMi.Core.Contracts;
 using EventMi.Core.Models;
+using EventMi.Infrastructure.Common.RepositoryContracts;
+using EventMi.Infrastructure.Data;
+using EventMi.Infrastructure.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventMi.Core.Services;
 /// <summary>
@@ -7,6 +11,15 @@ namespace EventMi.Core.Services;
 /// </summary>
 public class EventService : IEventService
 {
+    private readonly IRepository<Event> _repository;
+    private readonly EventMiDbContext _context;
+
+    public EventService(IRepository<Event> repository, EventMiDbContext context)
+    {
+        this._repository = repository;
+        this._context = context;
+    }
+
     /// <summary>
     /// Implementation for adding service
     /// </summary>
@@ -40,7 +53,17 @@ public class EventService : IEventService
     /// <returns>Collection of events</returns>
     public async Task<IEnumerable<EventModel>> GetAllEventsAsync()
     {
-        throw new NotImplementedException();
+        var events = await this._repository.AllAsNoTracking()
+            .Select(e => new EventModel()
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Start = e.Start,
+                End = e.End,
+                Place = e.Place
+            })
+            .ToArrayAsync();
+        return events;
     }
 
     /// <summary>

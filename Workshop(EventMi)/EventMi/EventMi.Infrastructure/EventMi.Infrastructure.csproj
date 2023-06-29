@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EventMi.Common\EventMi.Common.csproj" />
-      <ProjectReference Include="..\EventMi.Core\EventMi.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
