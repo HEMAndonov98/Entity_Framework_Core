@@ -67,14 +67,45 @@ public class EventController : Controller
     [HttpPost]
     public async Task<IActionResult> Add(EventModel model)
     {
-        await this._service.AddEventAsync(model);
+        try
+        {
+            await this._service.AddEventAsync(model);
+        }
+        catch (ArgumentNullException nullException)
+        {
+            this._logger.LogError("[HttpPost]/EventController/Add", nullException);
+            return View("Error", new ErrorViewModel()
+            {
+                Message = "There was an error while trying to add an Event"
+            });
+        }
+        catch (Exception e)
+        {
+            this._logger.LogError("[HttpPost]/EventController/Add", e);
+            return View("Error", new ErrorViewModel()
+            {
+                Message = "There was an unexpected error"
+            });
+        }
         return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
     public async Task<IActionResult> Details(int id)
     {
-        EventModel model = await this._service.GetEvent(id);
+        EventModel model;
+        try
+        {
+            model = await this._service.GetEvent(id);
+        }
+        catch (Exception e)
+        {
+            this._logger.LogError("[HttpGet]/EventController/Details", e);
+            return View("Error", new ErrorViewModel()
+            {
+                Message = "There was an unexpected error"
+            });
+        }
         return View("Details", model);
     }
 }
