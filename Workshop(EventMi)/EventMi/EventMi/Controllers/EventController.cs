@@ -70,4 +70,11 @@ public class EventController : Controller
         await this._service.AddEventAsync(model);
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        EventModel model = await this._service.GetEvent(id);
+        return View("Details", model);
+    }
 }

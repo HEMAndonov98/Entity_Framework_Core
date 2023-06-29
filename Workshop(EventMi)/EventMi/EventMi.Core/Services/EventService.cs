@@ -82,6 +82,15 @@ public class EventService : IEventService
     /// <returns>Single instance of an event</returns>
     public async Task<EventModel> GetEvent(int id)
     {
-        throw new NotImplementedException();
+        Event entity = await this._context.Events.FindAsync(id);
+        EventModel eventModel = new EventModel()
+        {
+            Name = entity.Name,
+            Start = entity.Start,
+            End = entity.End,
+            Place = entity.Place
+        };
+
+        return eventModel;
     }
 }
