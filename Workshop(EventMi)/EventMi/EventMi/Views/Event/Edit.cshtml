@@ -32,7 +32,7 @@
                 <span asp-validation-for="Place" class="text-danger"></span>
             </div>
             <div class="mb-3 text-center">
-                <input class="btn btn-primary" type="submit" value="Edit" />
+                <input class="btn btn-primary" type="submit" value="Edit" onclick="confirmEdit()"/>
             </div>
         </form>
     </div>
@@ -42,3 +42,10 @@
 @section Scripts {
         <partial name="_ValidationScriptsPartial" />
 }
+<script>
+    function confirmEdit() {
+        if (confirm('Are you sure you wish to save these changes?')) {
+            document.getElementById('editForm').submit();
+        }
+    }
+</script>

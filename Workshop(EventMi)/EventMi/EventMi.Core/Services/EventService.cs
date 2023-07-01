@@ -44,7 +44,17 @@ public class EventService : IEventService
     /// <param name="model">Event data</param>
     public async Task UpdateEventAsync(EventModel model)
     {
-        throw new NotImplementedException();
+        Event entity = new Event()
+        {
+            Id = model.Id,
+            Name = model.Name,
+            Start = model.Start,
+            End = model.End,
+            Place = model.Place
+        };
+
+        this._repository.Update(entity);
+        await this._repository.SaveChangesAsync();
     }
 
     /// <summary>
@@ -85,6 +95,7 @@ public class EventService : IEventService
         Event entity = await this._context.Events.FindAsync(id);
         EventModel eventModel = new EventModel()
         {
+            Id = entity.Id,
             Name = entity.Name,
             Start = entity.Start,
             End = entity.End,

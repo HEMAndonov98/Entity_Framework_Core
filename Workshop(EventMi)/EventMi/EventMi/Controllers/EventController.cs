@@ -21,7 +21,7 @@ public class EventController : Controller
     /// <summary>
     /// Constructor for the controller determines dependencies 
     /// </summary>
-    /// <param name="logger">ILogger<EventController></param>
+    /// <param name="logger">ILogger of type EventController</param>
     /// <param name="service">IEventService</param>
     public EventController(ILogger<EventController> logger, IEventService service)
     {
@@ -64,7 +64,13 @@ public class EventController : Controller
         return View("Add");
     }
 
+    /// <summary>
+    /// This method adds the data provided in the Model to the database
+    /// </summary>
+    /// <param name="model">represents Dto for adding Event to Db</param>
+    /// <returns></returns>
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Add(EventModel model)
     {
         try
@@ -90,6 +96,11 @@ public class EventController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    /// <summary>
+    /// Method to show the client all details about a given entity
+    /// </summary>
+    /// <param name="id">event identifier</param>
+    /// <returns></returns>
     [HttpGet]
     public async Task<IActionResult> Details(int id)
     {
@@ -106,6 +117,45 @@ public class EventController : Controller
                 Message = "There was an unexpected error"
             });
         }
+        return View("Details", model);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        EventModel model;
+        try
+        { 
+            model = await this._service.GetEvent(id);
+        }
+        catch (Exception e)
+        {
+            this._logger.LogError("[HttpGet]/EventController/Edit", e);
+            return View("Error", new ErrorViewModel()
+            {
+                Message = "There was an unexpected error"
+            });
+        }
+        return View("Edit", model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(EventModel model)
+    {
+        try
+        {
+            await this._service.UpdateEventAsync(model);
+        }
+        catch (Exception e)
+        {
+            this._logger.LogError("[HttpPut]/EventController/Edit", e);
+            return View("Error", new ErrorViewModel()
+            {
+                Message = "A problem occured while trying to update the Event"
+            });
+        }
+
         return View("Details", model);
     }
 }
