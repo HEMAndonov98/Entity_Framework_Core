@@ -10,7 +10,7 @@
 
 <div class="row">
     <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" id="editForm">
             <div class="mb-3">
                 <label asp-for="Name" class="form-label">Name</label>
                 <input asp-for="Name" class="form-control" aria-required="true" />
@@ -32,7 +32,7 @@
                 <span asp-validation-for="Place" class="text-danger"></span>
             </div>
             <div class="mb-3 text-center">
-                <input class="btn btn-primary" type="submit" value="Edit" onclick="confirmEdit()"/>
+                <input class="btn btn-primary" type="submit" value="Edit" onclick="confirmEdit(event)"/>
             </div>
         </form>
     </div>
@@ -43,7 +43,9 @@
         <partial name="_ValidationScriptsPartial" />
 }
 <script>
-    function confirmEdit() {
+    function confirmEdit(event) {
+        event.preventDefault();
+        
         if (confirm('Are you sure you wish to save these changes?')) {
             document.getElementById('editForm').submit();
         }

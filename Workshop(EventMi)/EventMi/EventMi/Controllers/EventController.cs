@@ -158,4 +158,23 @@ public class EventController : Controller
 
         return View("Details", model);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            await this._service.DeleteEventAsync(id);
+        }
+        catch (Exception e)
+        {
+            this._logger.LogError("EventController/Delete", e);
+            return View("Error", new ErrorViewModel()
+            {
+                Message = "An unexpected error occured while trying to perform this process"
+            });
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
 }

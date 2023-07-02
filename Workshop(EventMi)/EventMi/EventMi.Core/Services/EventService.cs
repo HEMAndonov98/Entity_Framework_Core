@@ -63,7 +63,11 @@ public class EventService : IEventService
     /// <param name="id">Event identifier</param>
     public async Task DeleteEventAsync(int id)
     {
-        throw new NotImplementedException();
+        Event entity = await this._context.Events
+            .FindAsync(id);
+        
+        this._repository.Delete(entity);
+        await this._repository.SaveChangesAsync();
     }
 
     /// <summary>

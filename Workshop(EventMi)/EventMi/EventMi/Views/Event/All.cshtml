@@ -35,8 +35,8 @@
                         <div class="d-flex flex-row justify-content-around">
                             <a asp-controller="Event" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a>
                             <a asp-controller="Event" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
-                            <form asp-controller="Event" asp-action="Delete" asp-route-id="@item.Id" method="Post">
-                                <input type="submit" value="Delete" class="btn btn-primary" />
+                            <form asp-controller="Event" id="deleteForm" asp-action="Delete" asp-route-id="@item.Id" method="Post">
+                                <input type="submit" value="Delete" class="btn btn-primary" onclick="confirmDelete(event)"/>
                             </form>
                           </div>
                     </td>
@@ -46,3 +46,12 @@
     </table>
 </div>
 
+<script>
+    function confirmDelete(event) {
+        event.preventDefault();
+        
+        if (confirm('Are you sure you wish to delete this event?')) {
+            document.getElementById('deleteForm').submit();
+        }
+    }
+</script>

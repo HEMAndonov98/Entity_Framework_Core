@@ -12,7 +12,7 @@ public class EventModel : EventBaseModel
     /// <summary>
     /// The event name
     /// </summary>
-    [Display(Name = "The event name")]
+    [Display(Name = "Event Name")]
     [Required(AllowEmptyStrings = false, ErrorMessage = EventModelErrors.RequiredField)]
     [StringLength(EventConstraints.EventNameMaxLength, MinimumLength = EventConstraints.EventNameMinLength
     , ErrorMessage = EventModelErrors.InvalidFieldLength)]
