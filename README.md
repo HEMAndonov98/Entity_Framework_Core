@@ -1,5 +1,5 @@
 # Entity-Framework-Core
- Here i will put all the exercises from the EF Core course from SoftUni
+ Here I will put all the exercises from the EF Core course from SoftUni
 ## Progress 
 ![][def]
 
@@ -15,4 +15,4 @@
  8. [Json Processing Exercise](https://github.com/HEMAndonov98/Entity_Framework_Core/tree/main/JSON%20Processing%20Exercises)
 
 
-[def]: https://geps.dev/progress/80
+[def]: https://geps.dev/progress/90
