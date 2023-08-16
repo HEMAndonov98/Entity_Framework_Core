@@ -13,6 +13,7 @@
  6. [Advanced Querying Exercise](https://github.com/HEMAndonov98/Entity_Framework_Core/tree/main/AdvancedQuerying%20Exercise)
  7. [Auto-Mapper Exercise](https://github.com/HEMAndonov98/Entity_Framework_Core/tree/main/Auto%20Mapper%20Exercise)
  8. [Json Processing Exercise](https://github.com/HEMAndonov98/Entity_Framework_Core/tree/main/JSON%20Processing%20Exercises)
+ 9. [Workshop(EventMi)](https://github.com/HEMAndonov98/Entity_Framework_Core/tree/main/Workshop(EventMi)/EventMi)
 
 
 [def]: https://geps.dev/progress/90
