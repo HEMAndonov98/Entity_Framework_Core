@@ -1,5 +1,7 @@
 ﻿// ReSharper disable VirtualMemberCallInConstructor
 
+using System.ComponentModel.DataAnnotations;
+using Blog.Data.Common.Constraints;
 using Blog.Data.Common.Models;
 
 namespace Blog.Data.Models
@@ -25,7 +27,20 @@ namespace Blog.Data.Models
         public DateTime CreatedOn { get; set; }
 
         public DateTime? ModifiedOn { get; set; }
+        
+        // User Info
+        /// <summary>
+        /// Displayed user name
+        /// </summary>
+        [MaxLength(ApplicationUserConstraints.UserNameMaxLength)]
+        public override string UserName { get; set; } = null!;
 
+        /// <summary>
+        /// User Email
+        /// </summary>
+        [MaxLength(ApplicationUserConstraints.EmailMaxLength)]
+        public override string Email { get; set; } = null!;
+        
         // Deletable entity
         public bool IsDeleted { get; set; }
 
