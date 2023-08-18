@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <UserSecretsId>aspnet-AspNetCoreTemplate-BBB373B5-EF3F-4DBB-B8AA-7152CEC275BF</UserSecretsId>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>AspNetCoreTemplate.Web</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+	<ItemGroup>
+		<AdditionalFiles Include="..\..\stylecop.json" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<InternalsVisibleTo Include="AspNetCoreTemplate.Web.Tests" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.3" />
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.3" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435" PrivateAssets="all">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\Blog.Data.Models\Blog.Data.Models.csproj" />
+    <ProjectReference Include="..\..\Data\Blog.Data\Blog.Data.csproj" />
+    <ProjectReference Include="..\..\Services\Blog.Services.Data\Blog.Services.Data.csproj" />
+    <ProjectReference Include="..\..\Services\Blog.Services\Blog.Services.csproj" />
+    <ProjectReference Include="..\Blog.Web.Infrastructure\Blog.Web.Infrastructure.csproj" />
+    <ProjectReference Include="..\Blog.Web.ViewModels\Blog.Web.ViewModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Areas\Administration\Views\Dashboard\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Administration\Views\_ViewImports.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Administration\Views\_ViewStart.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Home\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Home\Privacy.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Settings\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\Error.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\_CookieConsentPartial.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\_Layout.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\_LoginPartial.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\_ViewImports.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\_ViewStart.cshtml" />
+  </ItemGroup>
+</Project>
