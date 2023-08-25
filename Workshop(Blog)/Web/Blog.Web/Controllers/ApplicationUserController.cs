@@ -25,7 +25,7 @@ namespace Blog.Controllers
             userManager = _userManager;
             signInManager = _signInManager;
         }
-
+        
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register()

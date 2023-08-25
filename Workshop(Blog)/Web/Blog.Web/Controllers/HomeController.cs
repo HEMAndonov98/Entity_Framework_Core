@@ -1,11 +1,9 @@
-﻿using Blog.Web.ViewModels;
+﻿using Blog.Web.ViewModels.Shared;
 
 namespace Blog.Web.Controllers
 {
     using System.Diagnostics;
-
-    using Blog.Web.ViewModels;
-
+    
     using Microsoft.AspNetCore.Mvc;
 
     public class HomeController : BaseController
@@ -19,7 +17,9 @@ namespace Blog.Web.Controllers
         public IActionResult Error()
         {
             return this.View(
-                new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
+                new ErrorViewModel()
+                 { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier }
+                );
         }
     }
 }

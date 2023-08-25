@@ -30,7 +30,7 @@ namespace Blog.Data.Models
         
         // User Info
         /// <summary>
-        /// Displayed user name
+        /// Gets or sets displayed user name
         /// </summary>
         [MaxLength(ApplicationUserConstraints.UserNameMaxLength)]
         public override string UserName { get; set; } = null!;
