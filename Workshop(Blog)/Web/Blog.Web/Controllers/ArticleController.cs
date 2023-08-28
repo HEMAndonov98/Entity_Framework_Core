@@ -5,7 +5,6 @@ using AspNetCoreTemplate.Services.Contracts;
 using AspNetCoreTemplate.Web.ViewModels.Category;
 using Blog.Web.ViewModels.Article;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace AspNetCoreTemplate.Web.Controllers;
 
@@ -13,13 +12,11 @@ public class ArticleController : Controller
 {
     private readonly ICategoryService categoryService;
     private readonly IArticleService articleService;
-    private readonly ILogger Logger;
 
-    public ArticleController(ICategoryService categoryService, IArticleService articleService, ILogger logger)
+    public ArticleController(ICategoryService categoryService, IArticleService articleService)
     {
         this.categoryService = categoryService;
         this.articleService = articleService;
-        this.Logger = logger;
     }
     
     [HttpGet]
