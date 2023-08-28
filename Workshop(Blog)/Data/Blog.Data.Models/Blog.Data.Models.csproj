@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <RootNamespace>AspNetCoreTemplate.Data.Models</RootNamespace>
+    <RootNamespace>Blog.Data.Models</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>

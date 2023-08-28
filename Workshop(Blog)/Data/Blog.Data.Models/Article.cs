@@ -24,4 +24,9 @@ public class Article : BaseModel<int>
     /// Article Creator
     /// </summary>
     public string Author { get; set; }
+
+    /// <summary>
+    /// Category Id
+    /// </summary>
+    public int CategoryId { get; set; }
 }

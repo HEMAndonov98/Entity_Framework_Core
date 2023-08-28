@@ -1,12 +1,13 @@
+namespace AspNetCoreTemplate.Services;
+
+using System;
 using System.Threading.Tasks;
 
-using AspNetCoreTemplate.Services.Contracts;
+using Contracts;
 using Blog.Data.Common.Repositories;
 using Blog.Data.Models;
 using Blog.Web.ViewModels.Article;
-using Microsoft.Extensions.Logging;
 
-namespace AspNetCoreTemplate.Services;
 /// <summary>
 /// Implementation of Article business logic
 /// </summary>
@@ -14,12 +15,10 @@ public class ArticleService : IArticleService
 {
 
     private IRepository<Article> repository;
-    private ILogger<Article> logger;
     
-    public ArticleService(IRepository<Article> repository, ILogger<Article> logger)
+    public ArticleService(IRepository<Article> repository)
     {
         this.repository = repository;
-        this.logger = logger;
     }
     
     /// <summary>
@@ -30,7 +29,14 @@ public class ArticleService : IArticleService
     {
         Article newArticle = new Article()
         {
-            Title = 
-        }
+            Title = model.Title,
+            Content = model.Content,
+            CreatedOn = DateTime.Now,
+            ModifiedOn = DateTime.Now,
+            CategoryId = model.CategoryId
+        };
+
+        await this.repository.AddAsync(newArticle);
+        await this.repository.SaveChangesAsync();
     }
 }

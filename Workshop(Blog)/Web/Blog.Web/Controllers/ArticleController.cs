@@ -1,33 +1,43 @@
-using System.Threading.Tasks;
-using AspNetCoreTemplate.Web.Controllers.Contracts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using AspNetCoreTemplate.Services.Contracts;
+using AspNetCoreTemplate.Web.ViewModels.Category;
+using Blog.Web.ViewModels.Article;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace AspNetCoreTemplate.Web.Controllers;
 
-public class ArticleController : Controller, IArticleController
+public class ArticleController : Controller
 {
-    public Task<IActionResult> All()
+    private readonly ICategoryService categoryService;
+    private readonly IArticleService articleService;
+    private readonly ILogger Logger;
+
+    public ArticleController(ICategoryService categoryService, IArticleService articleService, ILogger logger)
     {
-        return View();
+        this.categoryService = categoryService;
+        this.articleService = articleService;
+        this.Logger = logger;
+    }
+    
+    [HttpGet]
+    public IActionResult Add()
+    {
+        List<CategoryViewModel> categories = this.categoryService.GetAllNotTracking()
+            .ToList();
+
+        ArticleAddViewModel article = new ArticleAddViewModel()
+        {
+            Categories = categories,
+        };
+
+        return View(article);
     }
 
-    public async Task<IActionResult> Add()
+    public IActionResult All()
     {
-        throw new System.NotImplementedException();
-    }
-
-    public IActionResult Details()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public async Task<IActionResult> Edit()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public async Task<IActionResult> Delete()
-    {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 }

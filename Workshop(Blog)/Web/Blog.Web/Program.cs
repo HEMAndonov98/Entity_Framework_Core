@@ -1,4 +1,6 @@
-﻿using Blog.Data;
+﻿using AspNetCoreTemplate.Services;
+using AspNetCoreTemplate.Services.Contracts;
+using Blog.Data;
 using Blog.Data.Common;
 using Blog.Data.Common.Repositories;
 using Blog.Data.Models;
@@ -67,6 +69,8 @@ namespace Blog.Web
             // Application services
             // services.AddTransient<IEmailSender, NullMessageSender>();
             // services.AddTransient<ISettingsService, SettingsService>();
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IArticleService, ArticleService>();
         }
 
         private static void Configure(WebApplication app)
