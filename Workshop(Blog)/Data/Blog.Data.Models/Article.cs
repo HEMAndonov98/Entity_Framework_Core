@@ -12,7 +12,7 @@ public class Article : BaseModel<int>
     /// Article Title
     /// </summary>
     [MinLength(ArticleConstraints.TitleMinLength)]
-    public string Type { get; set; } = null!;
+    public string Title { get; set; } = null!;
 
     /// <summary>
     /// Content written in an article

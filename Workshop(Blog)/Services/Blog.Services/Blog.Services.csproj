@@ -19,4 +19,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Web\Blog.Web.ViewModels\Blog.Web.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>
