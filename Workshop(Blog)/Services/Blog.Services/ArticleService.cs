@@ -21,13 +21,18 @@ public class ArticleService : IArticleService
 
     private readonly IRepository<Article> repository;
     private readonly ApplicationDbContext context;
-    
+
+    /// <summary>
+    /// Article service constructor
+    /// </summary>
+    /// <param name="repository"></param>
+    /// <param name="context"></param>
     public ArticleService(IRepository<Article> repository, ApplicationDbContext context)
     {
         this.repository = repository;
         this.context = context;
     }
-    
+
     /// <summary>
     /// Service for adding a new Article to the database
     /// </summary>
@@ -52,9 +57,9 @@ public class ArticleService : IArticleService
     /// Service for retrieving all articles from database
     /// </summary>
     /// <returns></returns>
-    public  IEnumerable<ArticleViewModel> GetAll()
+    public IEnumerable<ArticleViewModel> GetAll()
     {
-        var articles = this.repository.All()
+        var articles = this.repository.AllAsNoTracking()
             .Select(a => new ArticleViewModel()
             {
                 Id = a.Id,
@@ -67,5 +72,48 @@ public class ArticleService : IArticleService
             .ToArray();
 
         return articles;
+    }
+
+    /// <summary>
+    /// Service for retrieving a single Article from the database
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public async Task<ArticleViewModel> GetArticleAsync(int id)
+    {
+        ArticleViewModel? article = await this.repository
+            .AllAsNoTracking()
+            .Where(a => a.Id == id)
+            .Select(a => new ArticleViewModel()
+            {
+                Id = a.Id,
+                Title = a.Title,
+                Content = a.Content,
+                Author = a.Author,
+                CreatedOn = a.CreatedOn,
+                Category = this.context
+                    .Categories
+                    .FirstOrDefault(c => c.Id == a.CategoryId)
+                    .Name,
+            })
+            .FirstOrDefaultAsync();
+
+        return article;
+    }
+
+    public async Task EditArticleAsync(ArticleEditViewModel model)
+    {
+        Article editedArticle = new Article()
+        {
+            Id = model.Id,
+            Title = model.Title,
+            Content = model.Content,
+            ModifiedOn = DateTime.Now,
+            CategoryId = model.CategoryId,
+            Author = model.Author,
+        };
+
+        this.repository.Update(editedArticle);
+        await this.repository.SaveChangesAsync();
     }
 }

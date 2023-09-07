@@ -52,7 +52,7 @@ public class ArticleController : Controller
             this.logger.LogError("ArticleController/Add/HttpGet", e);
             return View("Error", new ErrorViewModel()
             {
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
             });
         }
     }
@@ -66,7 +66,7 @@ public class ArticleController : Controller
     public async Task<IActionResult> Add(ArticleAddViewModel model)
     {
         string author = HttpContext.User.Identity.Name;
-        
+
         try
         {
             model.Author = author;
@@ -79,7 +79,7 @@ public class ArticleController : Controller
             this.logger.LogError("ArticleController/Add/HttpPost", e);
             return View("Error", new ErrorViewModel()
             {
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
             });
         }
     }
@@ -89,13 +89,11 @@ public class ArticleController : Controller
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> All()
+    public  IActionResult All()
     {
-        IEnumerable<ArticleViewModel> articles;
-
         try
         {
-            articles = this.articleService.GetAll();
+            var articles = this.articleService.GetAll();
 
             return View(articles);
         }
@@ -104,8 +102,93 @@ public class ArticleController : Controller
             this.logger.LogError("ArticleController/All", e);
             return View("Error", new ErrorViewModel()
             {
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
             });
         }
     }
+
+    /// <summary>
+    /// Retrieves Article and shows the user detailed information about it
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        try
+        {
+            var article = await this.articleService.GetArticleAsync(id);
+
+            return View(article);
+        }
+        catch (Exception e)
+        {
+            this.logger.LogError("ArticleController/Details", e);
+            return View("Error", new ErrorViewModel()
+            {
+                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
+            });
+        }
+    }
+
+    /// <summary>
+    /// Retrieves the Article to be edited and shows it to the User
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        try
+        {
+            var article = await this.articleService.GetArticleAsync(id);
+            ICollection<CategoryViewModel> categories = this.categoryService.GetAllNotTracking();
+
+            ArticleEditViewModel articleEditModel = new ArticleEditViewModel()
+            {
+                Id = article.Id,
+                Title = article.Title,
+                Content = article.Content,
+                Author = article.Author,
+                Categories = categories
+            };
+
+            return View(articleEditModel);
+        }
+        catch (Exception e)
+        {
+            this.logger.LogError("ArticleController/Edit/HttpGet", e);
+            return View("Error", new ErrorViewModel()
+            {
+                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
+            });
+        }
+    }
+
+    /// <summary>
+    /// Updates the database with the edited Article data
+    /// </summary>
+    /// <param name="article"></param>
+    /// <returns></returns>
+    [HttpPost]
+    public async Task<IActionResult> Edit(ArticleEditViewModel article)
+    {
+        try
+        {
+            string author = HttpContext.User.Identity.Name;
+            article.Author = author;
+            await this.articleService.EditArticleAsync(article);
+
+            return RedirectToAction("All");
+        }
+        catch (Exception e)
+        {
+            this.logger.LogError("ArticleController/Edit/HttpPost", e);
+            return View("Error", new ErrorViewModel()
+            {
+                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
+            });
+        }
+    }
+
 }
