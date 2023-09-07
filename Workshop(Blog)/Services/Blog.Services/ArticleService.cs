@@ -1,3 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
+using Blog.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace AspNetCoreTemplate.Services;
 
 using System;
@@ -14,11 +19,13 @@ using Blog.Web.ViewModels.Article;
 public class ArticleService : IArticleService
 {
 
-    private IRepository<Article> repository;
+    private readonly IRepository<Article> repository;
+    private readonly ApplicationDbContext context;
     
-    public ArticleService(IRepository<Article> repository)
+    public ArticleService(IRepository<Article> repository, ApplicationDbContext context)
     {
         this.repository = repository;
+        this.context = context;
     }
     
     /// <summary>
@@ -33,10 +40,32 @@ public class ArticleService : IArticleService
             Content = model.Content,
             CreatedOn = DateTime.Now,
             ModifiedOn = DateTime.Now,
-            CategoryId = model.CategoryId
+            CategoryId = model.CategoryId,
+            Author = model.Author,
         };
 
         await this.repository.AddAsync(newArticle);
         await this.repository.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Service for retrieving all articles from database
+    /// </summary>
+    /// <returns></returns>
+    public  IEnumerable<ArticleViewModel> GetAll()
+    {
+        var articles = this.repository.All()
+            .Select(a => new ArticleViewModel()
+            {
+                Id = a.Id,
+                Title = a.Title,
+                Content = a.Content,
+                CreatedOn = a.CreatedOn,
+                Author = a.Author,
+                Category = this.context.Categories.FirstOrDefault(c => c.Id == a.CategoryId).Name,
+            })
+            .ToArray();
+
+        return articles;
     }
 }

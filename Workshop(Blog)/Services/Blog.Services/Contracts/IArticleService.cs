@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace AspNetCoreTemplate.Services.Contracts;
 
 using System.Threading.Tasks;
@@ -14,4 +16,6 @@ public interface IArticleService
     /// <param name="model"></param>
     /// <returns></returns>
     Task AddArticle(ArticleAddViewModel model);
+
+    IEnumerable<ArticleViewModel> GetAll();
 }

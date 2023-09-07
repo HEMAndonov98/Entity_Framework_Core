@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Data\Blog.Data\Blog.Data.csproj" />
     <ProjectReference Include="..\..\Web\Blog.Web.ViewModels\Blog.Web.ViewModels.csproj" />
   </ItemGroup>
 

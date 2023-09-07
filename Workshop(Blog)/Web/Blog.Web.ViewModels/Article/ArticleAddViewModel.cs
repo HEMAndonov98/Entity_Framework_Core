@@ -25,5 +25,7 @@ public class ArticleAddViewModel
 
     public int CategoryId { get; set; }
 
+    public string Author { get; set; } = null!;
+
     public ICollection<CategoryViewModel> Categories { get; set; }
 }

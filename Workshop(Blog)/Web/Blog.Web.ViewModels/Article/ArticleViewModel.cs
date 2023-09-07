@@ -9,7 +9,7 @@ public class ArticleViewModel
     /// <summary>
     /// identifier
     /// </summary>
-    public string Id { get; set; }
+    public int Id { get; set; }
     
     /// <summary>
     /// Article Title
@@ -24,15 +24,15 @@ public class ArticleViewModel
     /// <summary>
     /// Date of Article creation
     /// </summary>
-    public string CreatedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
 
     /// <summary>
     /// UserName of creator
     /// </summary>
-    public string Author { get; set; }
+    public string Author { get; set; } = null!;
 
     /// <summary>
     /// Article Category group
     /// </summary>
-    public string Category { get; set; }
+    public string Category { get; set; } = null!;
 }
