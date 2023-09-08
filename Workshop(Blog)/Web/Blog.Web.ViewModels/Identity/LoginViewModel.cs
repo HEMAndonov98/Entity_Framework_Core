@@ -13,9 +13,11 @@ public class LoginViewModel
     /// User name
     /// </summary>
     [Display(Name = "UserName")]
-    [Required(AllowEmptyStrings = false,
+    [Required(
+        AllowEmptyStrings = false,
         ErrorMessage = LogInErrorMessages.RequiredFieldError)]
-    [StringLength(ApplicationUserConstraints.UserNameMaxLength,
+    [StringLength(
+        ApplicationUserConstraints.UserNameMaxLength,
         MinimumLength = ApplicationUserConstraints.UserNameMinLength,
         ErrorMessage = LogInErrorMessages.InvalidFieldLength)]
     public string UserName { get; set; } = null!;
@@ -24,9 +26,11 @@ public class LoginViewModel
     /// User password
     /// </summary>
     [Display(Name = "Password")]
-    [Required(AllowEmptyStrings = false,
+    [Required(
+        AllowEmptyStrings = false,
         ErrorMessage = LogInErrorMessages.RequiredFieldError)]
-    [StringLength(ApplicationUserConstraints.PasswordMaxLength,
+    [StringLength(
+        ApplicationUserConstraints.PasswordMaxLength,
         MinimumLength = ApplicationUserConstraints.PasswordMinLength,
         ErrorMessage = LogInErrorMessages.InvalidFieldLength)]
     public string Password { get; set; }

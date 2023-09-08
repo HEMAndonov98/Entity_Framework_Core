@@ -101,7 +101,7 @@ namespace Blog.Controllers
                 }
             }
 
-            ModelState.AddModelError("", "Invalid login");
+            ModelState.AddModelError(string.Empty, "Invalid login");
 
             return View(model);
         }

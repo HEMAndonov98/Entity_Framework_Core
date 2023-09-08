@@ -6,8 +6,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-using AspNetCoreTemplate.Services.Contracts;
-using AspNetCoreTemplate.Web.ViewModels.Category;
+using Services.Contracts;
+using ViewModels.Category;
 
 using Blog.Web.ViewModels.Article;
 using Blog.Web.ViewModels.Shared;
@@ -68,40 +68,48 @@ public class ArticleController : Controller
     [HttpPost]
     public async Task<IActionResult> Add(ArticleAddViewModel model)
     {
-            try
+        if (!this.ModelState.IsValid)
+        {
+            List<CategoryViewModel> categories = this.categoryService.GetAllNotTracking()
+                .ToList();
+            model.Categories = categories;
+            return View(model);
+        }
+
+        try
+        {
+            var userIdentity = this.HttpContext.User.Identity;
+            if (userIdentity != null)
             {
-                var userIdentity = this.HttpContext.User.Identity;
-                if (userIdentity != null)
+                string author = userIdentity.Name;
+
+                if (!author.IsNullOrEmpty())
                 {
-                    string author = userIdentity.Name;
+                    model.Author = author;
+                    await this.articleService.AddArticle(model);
 
-                    if (!author.IsNullOrEmpty())
-                    {
-                        model.Author = author;
-                        await this.articleService.AddArticle(model);
-
-                        return this.RedirectToAction("All");
-                    }
+                    return this.RedirectToAction("All");
                 }
+            }
 
-                throw new ArgumentNullException();
-            }
-            catch (ArgumentNullException e)
+            throw new ArgumentException();
+        }
+        catch (ArgumentNullException e)
+        {
+            this.logger.LogError("ArticleController/Add/HttpPost(NullException)", e);
+            return this.View("Error", new ErrorViewModel
             {
-                this.logger.LogError("ArticleController/Add/HttpPost(NullException)", e);
-                return this.View("Error", new ErrorViewModel
-                {
-                    RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
-                });
-            }
-            catch (Exception)
+                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
+            });
+        }
+        catch (Exception)
+        {
+            this.logger.LogError("ArticleController/Add/HttpPost");
+            return this.View("Error", new ErrorViewModel
             {
-                this.logger.LogError("ArticleController/Add/HttpPost");
-                return this.View("Error", new ErrorViewModel
-                {
-                    RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
-                });
-            }
+                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
+            });
+        }
     }
 
     /// <summary>
@@ -193,6 +201,13 @@ public class ArticleController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(ArticleEditViewModel article)
     {
+
+        if (!this.ModelState.IsValid)
+        {
+            ICollection<CategoryViewModel> categories = this.categoryService.GetAllNotTracking();
+            article.Categories = categories;
+            return View(article);
+        }
         try
         {
             if (this.HttpContext.User.Identity != null)
