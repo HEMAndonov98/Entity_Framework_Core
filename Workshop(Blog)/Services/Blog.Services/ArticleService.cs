@@ -116,4 +116,15 @@ public class ArticleService : IArticleService
         this.repository.Update(editedArticle);
         await this.repository.SaveChangesAsync();
     }
+
+    public async Task DeleteArticleAsync(ArticleViewModel model)
+    {
+        Article articleToBeDeleted = await this.context.Articles.FindAsync(model.Id);
+
+        if (articleToBeDeleted != null)
+        {
+            this.repository.Delete(articleToBeDeleted);
+            await this.repository.SaveChangesAsync();
+        }
+    }
 }

@@ -36,4 +36,6 @@ public interface IArticleService
     /// <param name="model"></param>
     /// <returns></returns>
     Task EditArticleAsync(ArticleEditViewModel model);
+
+    Task DeleteArticleAsync(ArticleViewModel model);
 }

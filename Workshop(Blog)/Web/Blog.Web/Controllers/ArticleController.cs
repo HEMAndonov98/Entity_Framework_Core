@@ -191,4 +191,40 @@ public class ArticleController : Controller
         }
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            ArticleViewModel article = await this.articleService.GetArticleAsync(id);
+
+            return View(article);
+        }
+        catch (Exception e)
+        {
+            this.logger.LogError("ArticleController/Delete/HttpGet", e);
+            return View("Error", new ErrorViewModel()
+            {
+                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
+            });
+        }
+    }
+    [HttpPost]
+    public async Task<IActionResult> Delete(ArticleViewModel articleToBeDeleted)
+    {
+        try
+        {
+            await this.articleService.DeleteArticleAsync(articleToBeDeleted);
+
+            return RedirectToAction("All");
+        }
+        catch (Exception e)
+        {
+            this.logger.LogError("ArticleController/Delete/HttpPost", e);
+            return View("Error", new ErrorViewModel()
+            {
+                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
+            });
+        }
+    }
 }
