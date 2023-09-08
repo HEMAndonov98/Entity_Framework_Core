@@ -5,26 +5,16 @@ using Blog.Data.Common;
 using Blog.Data.Common.Repositories;
 using Blog.Data.Models;
 using Blog.Data.Repositories;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Blog.Web
 {
-    using System.Reflection;
-    using Blog.Data;
-    using Blog.Data.Common;
-    using Blog.Data.Common.Repositories;
-    using Blog.Data.Models;
-    using Blog.Data.Repositories;
-    using Blog.Services.Data;
-    using Blog.Web.ViewModels;
-
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-
     public class Program
     {
         public static void Main(string[] args)

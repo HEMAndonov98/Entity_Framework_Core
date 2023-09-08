@@ -1,13 +1,9 @@
-﻿using Blog.Data.Common.Models;
+﻿using System.Linq;
+using Blog.Data.Common.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Data
 {
-    using System.Linq;
-
-    using Blog.Data.Common.Models;
-
-    using Microsoft.EntityFrameworkCore;
-
     internal static class EntityIndexesConfiguration
     {
         public static void Configure(ModelBuilder modelBuilder)

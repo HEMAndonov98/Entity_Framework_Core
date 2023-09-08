@@ -1,15 +1,11 @@
 ﻿// ReSharper disable VirtualMemberCallInConstructor
 
+using System;
 using Blog.Data.Common.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Blog.Data.Models
 {
-    using System;
-
-    using Blog.Data.Common.Models;
-
-    using Microsoft.AspNetCore.Identity;
-
     public class ApplicationRole : IdentityRole, IAuditInfo, IDeletableEntity
     {
         public ApplicationRole()
@@ -20,7 +16,7 @@ namespace Blog.Data.Models
         public ApplicationRole(string name)
             : base(name)
         {
-            this.Id = Guid.NewGuid().ToString();
+            Id = Guid.NewGuid().ToString();
         }
 
         public DateTime CreatedOn { get; set; }

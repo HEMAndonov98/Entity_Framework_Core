@@ -8,13 +8,16 @@ using System.Threading.Tasks;
 
 using AspNetCoreTemplate.Services.Contracts;
 using AspNetCoreTemplate.Web.ViewModels.Category;
+
 using Blog.Web.ViewModels.Article;
 using Blog.Web.ViewModels.Shared;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+
 /// <summary>
-/// Controller for all events related to Articles
+/// Controller for all events related to Articles.
 /// </summary>
 public class ArticleController : Controller
 {
@@ -30,7 +33,7 @@ public class ArticleController : Controller
     }
 
     /// <summary>
-    /// Retrieves all Categories and returns a View for adding a new article to the user
+    /// Retrieves all Categories and returns a View for adding a new article to the user.
     /// </summary>
     /// <returns></returns>
     [HttpGet]
@@ -40,17 +43,17 @@ public class ArticleController : Controller
         {
             List<CategoryViewModel> categories = this.categoryService.GetAllNotTracking()
                 .ToList();
-            ArticleAddViewModel article = new ArticleAddViewModel()
+            ArticleAddViewModel article = new ArticleAddViewModel
             {
                 Categories = categories,
             };
 
-            return View(article);
+            return this.View(article);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            this.logger.LogError("ArticleController/Add/HttpGet", e);
-            return View("Error", new ErrorViewModel()
+            this.logger.LogError("ArticleController/Add/HttpGet");
+            return this.View("Error", new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
             });
@@ -58,49 +61,66 @@ public class ArticleController : Controller
     }
 
     /// <summary>
-    /// Adds the model to the Db and returns the list of all articles
+    /// Adds the model to the Db and returns the list of all articles.
     /// </summary>
     /// <param name="model"></param>
     /// <returns></returns>
     [HttpPost]
     public async Task<IActionResult> Add(ArticleAddViewModel model)
     {
-        string author = HttpContext.User.Identity.Name;
-
-        try
-        {
-            model.Author = author;
-            await this.articleService.AddArticle(model);
-
-            return RedirectToAction("All");
-        }
-        catch (Exception e)
-        {
-            this.logger.LogError("ArticleController/Add/HttpPost", e);
-            return View("Error", new ErrorViewModel()
+            try
             {
-                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
-            });
-        }
+                var userIdentity = this.HttpContext.User.Identity;
+                if (userIdentity != null)
+                {
+                    string author = userIdentity.Name;
+
+                    if (!author.IsNullOrEmpty())
+                    {
+                        model.Author = author;
+                        await this.articleService.AddArticle(model);
+
+                        return this.RedirectToAction("All");
+                    }
+                }
+
+                throw new ArgumentNullException();
+            }
+            catch (ArgumentNullException e)
+            {
+                this.logger.LogError("ArticleController/Add/HttpPost(NullException)", e);
+                return this.View("Error", new ErrorViewModel
+                {
+                    RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
+                });
+            }
+            catch (Exception)
+            {
+                this.logger.LogError("ArticleController/Add/HttpPost");
+                return this.View("Error", new ErrorViewModel
+                {
+                    RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
+                });
+            }
     }
 
     /// <summary>
-    /// Retrieves all articles and return a view to the user with the result
+    /// Retrieves all articles and return a view to the user with the result.
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public  IActionResult All()
+    public IActionResult All()
     {
         try
         {
             var articles = this.articleService.GetAll();
 
-            return View(articles);
+            return this.View(articles);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            this.logger.LogError("ArticleController/All", e);
-            return View("Error", new ErrorViewModel()
+            this.logger.LogError("ArticleController/All");
+            return this.View("Error", new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
             });
@@ -108,7 +128,7 @@ public class ArticleController : Controller
     }
 
     /// <summary>
-    /// Retrieves Article and shows the user detailed information about it
+    /// Retrieves Article and shows the user detailed information about it.
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
@@ -119,12 +139,12 @@ public class ArticleController : Controller
         {
             var article = await this.articleService.GetArticleAsync(id);
 
-            return View(article);
+            return this.View(article);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            this.logger.LogError("ArticleController/Details", e);
-            return View("Error", new ErrorViewModel()
+            this.logger.LogError("ArticleController/Details");
+            return this.View("Error", new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
             });
@@ -132,7 +152,7 @@ public class ArticleController : Controller
     }
 
     /// <summary>
-    /// Retrieves the Article to be edited and shows it to the User
+    /// Retrieves the Article to be edited and shows it to the User.
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
@@ -144,21 +164,21 @@ public class ArticleController : Controller
             var article = await this.articleService.GetArticleAsync(id);
             ICollection<CategoryViewModel> categories = this.categoryService.GetAllNotTracking();
 
-            ArticleEditViewModel articleEditModel = new ArticleEditViewModel()
+            ArticleEditViewModel articleEditModel = new ArticleEditViewModel
             {
                 Id = article.Id,
                 Title = article.Title,
                 Content = article.Content,
                 Author = article.Author,
-                Categories = categories
+                Categories = categories,
             };
 
-            return View(articleEditModel);
+            return this.View(articleEditModel);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            this.logger.LogError("ArticleController/Edit/HttpGet", e);
-            return View("Error", new ErrorViewModel()
+            this.logger.LogError("ArticleController/Edit/HttpGet");
+            return this.View("Error", new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
             });
@@ -166,7 +186,7 @@ public class ArticleController : Controller
     }
 
     /// <summary>
-    /// Updates the database with the edited Article data
+    /// Updates the database with the edited Article data.
     /// </summary>
     /// <param name="article"></param>
     /// <returns></returns>
@@ -175,22 +195,31 @@ public class ArticleController : Controller
     {
         try
         {
-            string author = HttpContext.User.Identity.Name;
-            article.Author = author;
+            if (this.HttpContext.User.Identity != null)
+            {
+                string author = this.HttpContext.User.Identity.Name;
+                article.Author = author;
+            }
+
             await this.articleService.EditArticleAsync(article);
 
-            return RedirectToAction("All");
+            return this.RedirectToAction("All");
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            this.logger.LogError("ArticleController/Edit/HttpPost", e);
-            return View("Error", new ErrorViewModel()
+            this.logger.LogError("ArticleController/Edit/HttpPost");
+            return this.View("Error", new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
             });
         }
     }
 
+    /// <summary>
+    /// Shows the User an interface for confirming the deletion of his article.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
@@ -198,17 +227,23 @@ public class ArticleController : Controller
         {
             ArticleViewModel article = await this.articleService.GetArticleAsync(id);
 
-            return View(article);
+            return this.View(article);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            this.logger.LogError("ArticleController/Delete/HttpGet", e);
-            return View("Error", new ErrorViewModel()
+            this.logger.LogError("ArticleController/Delete/HttpGet");
+            return this.View("Error", new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
             });
         }
     }
+
+    /// <summary>
+    /// Deletes the article from the database and return the user to the main page.
+    /// </summary>
+    /// <param name="articleToBeDeleted"></param>
+    /// <returns></returns>
     [HttpPost]
     public async Task<IActionResult> Delete(ArticleViewModel articleToBeDeleted)
     {
@@ -216,12 +251,12 @@ public class ArticleController : Controller
         {
             await this.articleService.DeleteArticleAsync(articleToBeDeleted);
 
-            return RedirectToAction("All");
+            return this.RedirectToAction("All");
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            this.logger.LogError("ArticleController/Delete/HttpPost", e);
-            return View("Error", new ErrorViewModel()
+            this.logger.LogError("ArticleController/Delete/HttpPost");
+            return this.View("Error", new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
             });

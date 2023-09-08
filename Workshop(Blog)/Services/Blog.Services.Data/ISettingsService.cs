@@ -1,7 +1,7 @@
-﻿namespace Blog.Services.Data
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
+namespace Blog.Services.Data
+{
     public interface ISettingsService
     {
         int GetCount();

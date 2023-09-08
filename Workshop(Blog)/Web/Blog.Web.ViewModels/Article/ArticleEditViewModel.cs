@@ -1,12 +1,10 @@
-namespace Blog.Web.ViewModels.Article;
-
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-
 using AspNetCoreTemplate.Web.ViewModels.Category;
 using Blog.Data.Common.Constraints;
 using Blog.Web.Common.ArticleErrors;
+
+namespace Blog.Web.ViewModels.Article;
 
 public class ArticleEditViewModel
 {

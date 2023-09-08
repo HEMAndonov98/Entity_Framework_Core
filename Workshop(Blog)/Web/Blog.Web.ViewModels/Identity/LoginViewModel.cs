@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-
 using Blog.Data.Common.Constraints;
 using Blog.Web.Common.LoginViewModelErorrMessages;
 

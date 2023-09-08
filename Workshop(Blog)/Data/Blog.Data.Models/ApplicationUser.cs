@@ -1,26 +1,22 @@
 ﻿// ReSharper disable VirtualMemberCallInConstructor
 
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Blog.Data.Common.Constraints;
 using Blog.Data.Common.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Blog.Data.Models
 {
-    using System;
-    using System.Collections.Generic;
-
-    using Blog.Data.Common.Models;
-
-    using Microsoft.AspNetCore.Identity;
-
     public class ApplicationUser : IdentityUser, IAuditInfo, IDeletableEntity
     {
         public ApplicationUser()
         {
-            this.Id = Guid.NewGuid().ToString();
-            this.Roles = new HashSet<IdentityUserRole<string>>();
-            this.Claims = new HashSet<IdentityUserClaim<string>>();
-            this.Logins = new HashSet<IdentityUserLogin<string>>();
+            Id = Guid.NewGuid().ToString();
+            Roles = new HashSet<IdentityUserRole<string>>();
+            Claims = new HashSet<IdentityUserClaim<string>>();
+            Logins = new HashSet<IdentityUserLogin<string>>();
         }
 
         // Audit info

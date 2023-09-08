@@ -1,29 +1,27 @@
-using System.Collections.Generic;
-using System.Linq;
-using Blog.Data;
-using Microsoft.EntityFrameworkCore;
-
 namespace AspNetCoreTemplate.Services;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Contracts;
+using Blog.Data;
 using Blog.Data.Common.Repositories;
 using Blog.Data.Models;
 using Blog.Web.ViewModels.Article;
+using Microsoft.EntityFrameworkCore;
 
 /// <summary>
-/// Implementation of Article business logic
+/// Implementation of Article business logic.
 /// </summary>
 public class ArticleService : IArticleService
 {
-
     private readonly IRepository<Article> repository;
     private readonly ApplicationDbContext context;
 
     /// <summary>
-    /// Article service constructor
+    /// Article service constructor.
     /// </summary>
     /// <param name="repository"></param>
     /// <param name="context"></param>
@@ -34,12 +32,12 @@ public class ArticleService : IArticleService
     }
 
     /// <summary>
-    /// Service for adding a new Article to the database
+    /// Service for adding a new Article to the database.
     /// </summary>
     /// <param name="model"></param>
     public async Task AddArticle(ArticleAddViewModel model)
     {
-        Article newArticle = new Article()
+        Article newArticle = new Article
         {
             Title = model.Title,
             Content = model.Content,
@@ -54,13 +52,13 @@ public class ArticleService : IArticleService
     }
 
     /// <summary>
-    /// Service for retrieving all articles from database
+    /// Service for retrieving all articles from database.
     /// </summary>
     /// <returns></returns>
     public IEnumerable<ArticleViewModel> GetAll()
     {
         var articles = this.repository.AllAsNoTracking()
-            .Select(a => new ArticleViewModel()
+            .Select(a => new ArticleViewModel
             {
                 Id = a.Id,
                 Title = a.Title,
@@ -75,16 +73,16 @@ public class ArticleService : IArticleService
     }
 
     /// <summary>
-    /// Service for retrieving a single Article from the database
+    /// Service for retrieving a single Article from the database.
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
     public async Task<ArticleViewModel> GetArticleAsync(int id)
     {
-        ArticleViewModel? article = await this.repository
+        ArticleViewModel article = await this.repository
             .AllAsNoTracking()
             .Where(a => a.Id == id)
-            .Select(a => new ArticleViewModel()
+            .Select(a => new ArticleViewModel
             {
                 Id = a.Id,
                 Title = a.Title,
@@ -101,9 +99,13 @@ public class ArticleService : IArticleService
         return article;
     }
 
+    /// <summary>
+    /// Service for changing(editing) an Article.
+    /// </summary>
+    /// <param name="model"></param>
     public async Task EditArticleAsync(ArticleEditViewModel model)
     {
-        Article editedArticle = new Article()
+        Article editedArticle = new Article
         {
             Id = model.Id,
             Title = model.Title,
@@ -117,6 +119,10 @@ public class ArticleService : IArticleService
         await this.repository.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Service for deleting an Article from the database.
+    /// </summary>
+    /// <param name="model"></param>
     public async Task DeleteArticleAsync(ArticleViewModel model)
     {
         Article articleToBeDeleted = await this.context.Articles.FindAsync(model.Id);

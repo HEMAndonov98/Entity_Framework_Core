@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AspNetCoreTemplate.Services.Contracts;
 using AspNetCoreTemplate.Web.ViewModels.Category;
 using Blog.Data.Common.Repositories;
@@ -19,8 +18,8 @@ public class CategoryService : ICategoryService
 
     public ICollection<CategoryViewModel> GetAllNotTracking()
     {
-        return this.repository.AllAsNoTracking()
-            .Select(cat => new CategoryViewModel()
+        return repository.AllAsNoTracking()
+            .Select(cat => new CategoryViewModel
             {
                 Id = cat.Id,
                 Name = cat.Name

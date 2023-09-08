@@ -1,16 +1,11 @@
-﻿using Blog.Data.Common.Models;
+﻿using System;
+using System.Linq;
+using Blog.Data.Common.Models;
 using Blog.Data.Common.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Data.Repositories
 {
-    using System;
-    using System.Linq;
-
-    using Blog.Data.Common.Models;
-    using Blog.Data.Common.Repositories;
-
-    using Microsoft.EntityFrameworkCore;
-
     public class EfDeletableEntityRepository<TEntity> : EfRepository<TEntity>, IDeletableEntityRepository<TEntity>
         where TEntity : class, IDeletableEntity
     {
@@ -33,14 +28,14 @@ namespace Blog.Data.Repositories
         {
             entity.IsDeleted = false;
             entity.DeletedOn = null;
-            this.Update(entity);
+            Update(entity);
         }
 
         public override void Delete(TEntity entity)
         {
             entity.IsDeleted = true;
             entity.DeletedOn = DateTime.UtcNow;
-            this.Update(entity);
+            Update(entity);
         }
     }
 }

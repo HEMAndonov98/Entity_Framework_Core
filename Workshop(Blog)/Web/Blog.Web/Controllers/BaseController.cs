@@ -1,7 +1,7 @@
-﻿namespace Blog.Web.Controllers
-{
-    using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
+namespace Blog.Web.Controllers
+{
     public class BaseController : Controller
     {
     }

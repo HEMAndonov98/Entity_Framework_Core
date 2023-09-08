@@ -1,10 +1,6 @@
 ﻿using System.Threading.Tasks;
-
-
 using Blog.Data.Models;
 using Blog.Web.ViewModels.Identity;
-
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +45,7 @@ namespace Blog.Controllers
                 return View(model);
             }
 
-            var user = new ApplicationUser()
+            var user = new ApplicationUser
             {
                 Email = model.Email,
                 UserName = model.UserName
