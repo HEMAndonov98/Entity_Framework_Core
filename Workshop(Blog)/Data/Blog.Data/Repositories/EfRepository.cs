@@ -1,18 +1,20 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Blog.Data.Common.Repositories;
-using Microsoft.EntityFrameworkCore;
-
-namespace Blog.Data.Repositories
+﻿namespace Blog.Data.Repositories
 {
+    using System;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+
+    using Blog.Data.Common.Repositories;
+    using Microsoft.EntityFrameworkCore;
+
     public class EfRepository<TEntity> : IRepository<TEntity>
         where TEntity : class
     {
         public EfRepository(ApplicationDbContext context)
         {
-            Context = context ?? throw new ArgumentNullException(nameof(context));
-            DbSet = Context.Set<TEntity>();
+            this.Context = context ?? throw new ArgumentNullException(nameof(context));
+            this.DbSet = Context.Set<TEntity>();
         }
 
         protected DbSet<TEntity> DbSet { get; set; }
@@ -22,6 +24,13 @@ namespace Blog.Data.Repositories
         public virtual IQueryable<TEntity> All() => DbSet;
 
         public virtual IQueryable<TEntity> AllAsNoTracking() => DbSet.AsNoTracking();
+
+        public virtual IQueryable<TEntity> AllIncludingAsNoTracking<TProperty>(Expression<Func<TEntity, TProperty>> expression)
+            => this.DbSet.Include(expression).AsNoTracking();
+
+        public async Task<TEntity> FindAsyncIncluding<TProperty>(Expression<Func<TEntity, TProperty>> includeExpression,
+            Expression<Func<TEntity, bool>> filter)
+            => await this.DbSet.Include(includeExpression).FirstOrDefaultAsync(filter);
 
         public virtual Task AddAsync(TEntity entity) => DbSet.AddAsync(entity).AsTask();
 

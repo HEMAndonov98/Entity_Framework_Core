@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using AspNetCoreTemplate.Web.ViewModels.Category;
@@ -38,4 +39,6 @@ public class ArticleEditViewModel
     public string Author { get; set; } = null!;
 
     public ICollection<CategoryViewModel> Categories { get; set; }
+
+    public DateTime CreatedOn { get; set; }
 }

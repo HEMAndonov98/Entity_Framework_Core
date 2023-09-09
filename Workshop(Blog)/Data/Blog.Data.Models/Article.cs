@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Blog.Data.Common.Constraints;
 using Blog.Data.Common.Models;
 
@@ -11,13 +12,15 @@ public class Article : BaseModel<int>
     /// <summary>
     /// Article Title
     /// </summary>
-    [MinLength(ArticleConstraints.TitleMinLength)]
+    [MaxLength(ArticleConstraints.TitleMaxLength)]
+    [Required]
     public string Title { get; set; } = null!;
 
     /// <summary>
     /// Content written in an article
     /// </summary>
-    [MinLength(ArticleConstraints.ContentMinLength)]
+    [MaxLength(ArticleConstraints.ContentMaxLength)]
+    [Required]
     public string Content { get; set; } = null!;
 
     /// <summary>
@@ -28,5 +31,8 @@ public class Article : BaseModel<int>
     /// <summary>
     /// Category Id
     /// </summary>
+   [ForeignKey(nameof(Category))]
     public int CategoryId { get; set; }
+
+    public Category Category { get; set; }
 }

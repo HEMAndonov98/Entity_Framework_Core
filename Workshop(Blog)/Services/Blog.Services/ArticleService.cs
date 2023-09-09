@@ -55,9 +55,9 @@ public class ArticleService : IArticleService
     /// Service for retrieving all articles from database.
     /// </summary>
     /// <returns></returns>
-    public IEnumerable<ArticleViewModel> GetAll()
+    public async Task<IEnumerable<ArticleViewModel>> GetAllAsync()
     {
-        var articles = this.repository.AllAsNoTracking()
+        var articles = await this.repository.AllIncludingAsNoTracking(a => a.Category)
             .Select(a => new ArticleViewModel
             {
                 Id = a.Id,
@@ -65,9 +65,9 @@ public class ArticleService : IArticleService
                 Content = a.Content,
                 CreatedOn = a.CreatedOn,
                 Author = a.Author,
-                Category = this.context.Categories.FirstOrDefault(c => c.Id == a.CategoryId).Name,
+                Category = a.Category.Name,
             })
-            .ToArray();
+            .ToArrayAsync();
 
         return articles;
     }
@@ -79,24 +79,20 @@ public class ArticleService : IArticleService
     /// <returns></returns>
     public async Task<ArticleViewModel> GetArticleAsync(int id)
     {
-        ArticleViewModel article = await this.repository
-            .AllAsNoTracking()
-            .Where(a => a.Id == id)
-            .Select(a => new ArticleViewModel
-            {
-                Id = a.Id,
-                Title = a.Title,
-                Content = a.Content,
-                Author = a.Author,
-                CreatedOn = a.CreatedOn,
-                Category = this.context
-                    .Categories
-                    .FirstOrDefault(c => c.Id == a.CategoryId)
-                    .Name,
-            })
-            .FirstOrDefaultAsync();
+        var article = await this.repository
+            .FindAsyncIncluding(a => a.Category, a => a.Id == id);
 
-        return article;
+        ArticleViewModel articleViewModel = new ArticleViewModel()
+        {
+            Id = article.Id,
+            Title = article.Title,
+            Content = article.Content,
+            Author = article.Author,
+            CreatedOn = article.CreatedOn,
+            Category = article.Category.Name,
+        };
+
+        return articleViewModel;
     }
 
     /// <summary>
@@ -113,6 +109,7 @@ public class ArticleService : IArticleService
             ModifiedOn = DateTime.Now,
             CategoryId = model.CategoryId,
             Author = model.Author,
+            CreatedOn = model.CreatedOn,
         };
 
         this.repository.Update(editedArticle);

@@ -117,11 +117,11 @@ public class ArticleController : Controller
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public IActionResult All()
+    public async Task<IActionResult> All()
     {
         try
         {
-            var articles = this.articleService.GetAll();
+            var articles = await this.articleService.GetAllAsync();
 
             return this.View(articles);
         }
@@ -179,6 +179,7 @@ public class ArticleController : Controller
                 Content = article.Content,
                 Author = article.Author,
                 Categories = categories,
+                CreatedOn = article.CreatedOn,
             };
 
             return this.View(articleEditModel);

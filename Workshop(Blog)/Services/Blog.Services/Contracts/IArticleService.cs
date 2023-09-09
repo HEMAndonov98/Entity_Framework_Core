@@ -21,7 +21,7 @@ public interface IArticleService
     /// Blueprint for retrieving all Articles.
     /// </summary>
     /// <returns></returns>
-    IEnumerable<ArticleViewModel> GetAll();
+    Task<IEnumerable<ArticleViewModel>> GetAllAsync();
 
     /// <summary>
     /// Blueprint for retrieving a single Article.
