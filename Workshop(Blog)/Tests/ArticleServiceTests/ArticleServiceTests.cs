@@ -1,8 +1,10 @@
 using System.Collections;
+using System.Linq.Expressions;
 using AspNetCoreTemplate.Services;
 using Blog.Data;
 using Blog.Data.Common.Repositories;
 using Blog.Data.Models;
+using Blog.Data.Repositories;
 using Blog.Web.ViewModels.Article;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -20,15 +22,15 @@ public class ArticleServiceTests
             .Options;
     
     private  ArticleService sut;
-    private ApplicationDbContext testContext;
+    private Mock<ApplicationDbContext> mockDbContext;
     
     
     [OneTimeSetUp]
     public void SetUp()
     {
-        this.testContext = new ApplicationDbContext(this.contextOptions);
+        this.mockDbContext = new Mock<ApplicationDbContext>(contextOptions);
         this.articleRepoMock = new Mock<IRepository<Article>>();
-        this.sut = new ArticleService(this.articleRepoMock.Object, this.testContext);
+        this.sut = new ArticleService(this.articleRepoMock.Object, this.mockDbContext.Object);
     }
 
     [Test]
@@ -55,38 +57,33 @@ public class ArticleServiceTests
     }
 
     [Test]
-    public async Task GetAll_ShouldReturnIEnumerableOfArticleViewModel()
+    public async Task GetArticleAsync_ShouldReturnValidArticleViewModel()
     {
-        //Arrange
-        var articles = new Article[3]
+        var createdOn = DateTime.Now;
+        
+        var sampleArticle = new Article
         {
-            new Article() {Id = 0, Title = "TestArticle1" },
-            new Article() {Id = 1, Title = "TestArticle2" },
-            new Article() {Id = 3, Title = "TestArticle3" },
+            Id = 1,
+            Title = "Article 1",
+            Content = "Content 1",
+            Author = "Author 1",
+            CreatedOn = createdOn,
+            Category = new Category{Name = "Test Category"}
         };
 
-        this.articleRepoMock.Setup(x => x.AllIncludingAsNoTracking(x => x.Category))
-            .Returns(articles.AsQueryable());
-        //Act
-        var real = await this.sut.GetAllAsync();
-        var actual = real.ToList();
-        //Assert
-
-        Assert.NotNull(actual);
-        Assert.That(actual.Count(), Is.EqualTo(articles.Length));
-
-        var articleIndex = 0;
+        this.articleRepoMock.Setup(x => x.FindAsyncIncluding(a => a.Category, a => a.Id == 1))
+            .ReturnsAsync(sampleArticle);
+        var result = await this.sut.GetArticleAsync(1);
         
-        foreach (var articleViewModel in actual)
+        Assert.IsNotNull(result);
+        Assert.Multiple(() =>
         {
-            Assert.Multiple(() =>
-            {
-                Assert.IsInstanceOf<ArticleViewModel>(articleViewModel);
-                Assert.That(articleViewModel.Id, Is.EqualTo(articles[articleIndex].Id));
-                Assert.That(articleViewModel.Title, Is.EqualTo(articles[articleIndex].Title));
-            });
-            
-            articleIndex++;
-        }
+            Assert.That(result.Id, Is.EqualTo(sampleArticle.Id));
+            Assert.That(result.Title, Is.EqualTo(sampleArticle.Title));
+            Assert.That(result.Content, Is.EqualTo(sampleArticle.Content));
+            Assert.That(result.Author, Is.EqualTo(sampleArticle.Author));
+            Assert.That(result.CreatedOn, Is.EqualTo(sampleArticle.CreatedOn));
+            Assert.That(result.Category, Is.EqualTo(sampleArticle.Category.Name));
+        });
     }
 }
