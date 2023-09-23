@@ -1,14 +1,10 @@
-using System.Collections;
-using System.Linq.Expressions;
 using AspNetCoreTemplate.Services;
 using Blog.Data;
 using Blog.Data.Common.Repositories;
 using Blog.Data.Models;
-using Blog.Data.Repositories;
 using Blog.Web.ViewModels.Article;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using NUnit.Framework.Internal;
 
 namespace ArticleServiceTests;
 
