@@ -207,8 +207,9 @@ public class ArticleController : Controller
         {
             ICollection<CategoryViewModel> categories = this.categoryService.GetAllNotTracking();
             article.Categories = categories;
-            return View(article);
+            return this.View(article);
         }
+
         try
         {
             if (this.HttpContext.User.Identity != null)
@@ -265,7 +266,7 @@ public class ArticleController : Controller
     {
         try
         {
-            await this.articleService.DeleteArticleAsync(articleToBeDeleted);
+            await this.articleService.DeleteArticleAsync(articleToBeDeleted.Id);
 
             return this.RedirectToAction("All");
         }
