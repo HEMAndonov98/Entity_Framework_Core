@@ -9,7 +9,7 @@ namespace Blog.Data.Common.Repositories
 
         IQueryable<TEntity> AllAsNoTracking();
 
-        IQueryable<TEntity> AllIncludingAsNoTracking<TProperty>(Expression<Func<TEntity, TProperty>> expression);
+        Task<IEnumerable<TEntity>> AllIncludingAsNoTracking<TProperty>(Expression<Func<TEntity, TProperty>> expression);
 
         Task<TEntity> FindAsyncIncluding<TProperty>(Expression<Func<TEntity, TProperty>> includeExpression, Expression<Func<TEntity, bool>> filter);
 

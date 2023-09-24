@@ -57,7 +57,9 @@ public class ArticleService : IArticleService
     /// <returns></returns>
     public async Task<IEnumerable<ArticleViewModel>> GetAllAsync()
     {
-        var articles = await this.repository.AllIncludingAsNoTracking(a => a.Category)
+        var articles = await this.repository.AllIncludingAsNoTracking(a => a.Category);
+
+        var viewModels = articles
             .Select(a => new ArticleViewModel
             {
                 Id = a.Id,
@@ -66,10 +68,9 @@ public class ArticleService : IArticleService
                 CreatedOn = a.CreatedOn,
                 Author = a.Author,
                 Category = a.Category.Name,
-            })
-            .ToArrayAsync();
+            });
 
-        return articles;
+        return viewModels;
     }
 
     /// <summary>
@@ -120,9 +121,9 @@ public class ArticleService : IArticleService
     /// Service for deleting an Article from the database.
     /// </summary>
     /// <param name="model"></param>
-    public async Task DeleteArticleAsync(ArticleViewModel model)
+    public async Task DeleteArticleAsync(int id)
     {
-        Article articleToBeDeleted = await this.context.Articles.FindAsync(model.Id);
+        Article? articleToBeDeleted = await this.repository.FindAsyncIncluding(a => a.Category, a => a.Id == id);
 
         if (articleToBeDeleted != null)
         {

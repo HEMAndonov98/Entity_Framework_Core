@@ -1,10 +1,13 @@
-﻿namespace Blog.Data.Repositories
+﻿using System.Collections.Generic;
+
+namespace AspNetCoreTemplate.Data.Repositories
 {
     using System;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
+    using Blog.Data;
     using Blog.Data.Common.Repositories;
     using Microsoft.EntityFrameworkCore;
 
@@ -25,10 +28,12 @@
 
         public virtual IQueryable<TEntity> AllAsNoTracking() => DbSet.AsNoTracking();
 
-        public virtual IQueryable<TEntity> AllIncludingAsNoTracking<TProperty>(Expression<Func<TEntity, TProperty>> expression)
-            => this.DbSet.Include(expression).AsNoTracking();
+        public virtual async Task<IEnumerable<TEntity>> AllIncludingAsNoTracking<TProperty>(
+            Expression<Func<TEntity, TProperty>> expression)
+            => await this.AllAsNoTracking().Include(expression).ToListAsync();
 
-        public async Task<TEntity> FindAsyncIncluding<TProperty>(Expression<Func<TEntity, TProperty>> includeExpression,
+        public async Task<TEntity> FindAsyncIncluding<TProperty>(
+            Expression<Func<TEntity, TProperty>> includeExpression,
             Expression<Func<TEntity, bool>> filter)
             => await this.DbSet.Include(includeExpression).FirstOrDefaultAsync(filter);
 
@@ -36,7 +41,7 @@
 
         public virtual void Update(TEntity entity)
         {
-            var entry = Context.Entry(entity);
+            var entry = this.Context.Entry(entity);
             if (entry.State == EntityState.Detached)
             {
                 DbSet.Attach(entity);

@@ -40,7 +40,7 @@ public interface IArticleService
     /// <summary>
     /// Blueprint for deleting an Article.
     /// </summary>
-    /// <param name="model"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
-    Task DeleteArticleAsync(ArticleViewModel model);
+    Task DeleteArticleAsync(int id);
 }

@@ -1,4 +1,5 @@
-﻿using AspNetCoreTemplate.Services;
+﻿using AspNetCoreTemplate.Data.Repositories;
+using AspNetCoreTemplate.Services;
 using AspNetCoreTemplate.Services.Contracts;
 using Blog.Data;
 using Blog.Data.Common;
